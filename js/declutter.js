@@ -48,9 +48,12 @@ function setMarkerOffset(p, dx, dy) {
   const len = Math.hypot(dx, dy);
   // Nét mực từ tâm marker (đã dời) chỉ ngược về vị trí thật, đầu nét là chấm tròn
   leader.style.cssText = len ? `width:${len}px;transform:rotate(${Math.atan2(-dy, -dx)}rad)` : "display:none";
-  // Mũi popup chỉ vào marker ở chỗ mới (mặc định của Leaflet là [0, 7])
+  // Mũi popup chỉ vào marker ở chỗ mới (mặc định của Leaflet là [0, 7]). Chỉ dời khi độ lệch đổi, và dời bằng setLatLng
+  // (đặt lại vị trí + autoPan) chứ không update() — update() dựng lại nội dung → mất focus, ô đang đọc cuộn về đầu.
+  const [ox, oy] = p.popup.options.offset;
+  if (ox === dx && oy === dy + 7) return;
   p.popup.options.offset = [dx, dy + 7];
-  if (p.popup.isOpen()) p.popup.update();
+  if (p.popup.isOpen()) p.popup.setLatLng(p.popup.getLatLng());
 }
 
 // Vị trí thử lần lượt cho tên: dưới ảnh (mặc định) → bên phải → bên trái → phía trên

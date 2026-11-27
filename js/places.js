@@ -3,15 +3,17 @@
 // Tạo ra: CURRENT_MONTH, activeMonth, inSeason(), calendarHtml(), placeIcon(), catVars(), catBadge(), thumbHtml(), creditHtml(),
 //         deco(), srOnly(), announce()
 
-// Đọc một câu ngắn cho trình đọc màn hình qua vùng #sr-status (role="status"); delay để gộp khi gõ phím liên tục
-let announceTimer = null;
+// Đọc một câu ngắn cho trình đọc màn hình qua vùng #sr-status (role="status"); delay để gộp khi gõ phím liên tục.
+// Câu mới huỷ hẳn câu cũ chưa kịp đọc (cả hai bước hẹn giờ) → không bao giờ đọc nhầm câu cũ sau câu mới.
+let announceTimers = [];
+function cancelAnnounce() { announceTimers.forEach(clearTimeout); announceTimers = []; }
 function announce(msg, delay = 0) {
-  clearTimeout(announceTimer);
-  announceTimer = setTimeout(() => {
+  cancelAnnounce();
+  announceTimers.push(setTimeout(() => {
     const el = document.getElementById("sr-status");
     el.textContent = "";                            // xoá trước để câu giống lần trước vẫn được đọc lại
-    setTimeout(() => { el.textContent = msg; }, 60);
-  }, delay);
+    announceTimers.push(setTimeout(() => { el.textContent = msg; }, 60));
+  }, delay));
 }
 
 // ===== Mùa đẹp theo tháng =====

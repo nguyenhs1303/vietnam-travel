@@ -17,6 +17,7 @@ const wxText = code => (WMO[code] || [, "Không rõ"])[1];
 const isRain = code => (code >= 51 && code <= 67) || (code >= 80 && code <= 82);
 const WEATHER_TTL = 15 * 60 * 1000;           // làm mới mỗi 15 phút
 let weatherState = "loading";                  // loading | ok | error
+let weatherErrorAnnounced = false;             // đã đọc "Không tải được thời tiết" chưa (đừng đọc lại mỗi 15 phút)
 
 // Lời khuyên ngắn theo thời tiết hiện tại (tối đa 2 câu)
 function weatherTips(p, c) {
@@ -78,11 +79,14 @@ async function loadWeather() {
     const list = Array.isArray(data) ? data : [data];
     PLACES.forEach((p, i) => { if (list[i]?.current) p.weather = list[i]; });
     weatherState = "ok";
+    weatherErrorAnnounced = false;
     if (weatherRetrying) announce("Đã tải xong thời tiết.");
   } catch (err) {
     console.warn("Không tải được thời tiết:", err);
     weatherState = "error";                    // giữ dữ liệu cũ (nếu có), chỉ báo lỗi khi chưa có gì
-    if (!PLACES.some(p => p.weather)) announce("Không tải được thời tiết. Có nút Thử lại trong khung Đẹp nhất lúc này.");
+    if (!PLACES.some(p => p.weather) && (weatherRetrying || !weatherErrorAnnounced))
+      announce("Không tải được thời tiết. Có nút Thử lại trong khung Đẹp nhất lúc này.");
+    weatherErrorAnnounced = true;
   }
   weatherRetrying = false;
   refreshWeatherUI();
