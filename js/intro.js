@@ -17,6 +17,7 @@ function finishIntro() {
     p.removeAttribute("pathLength");
   });
   el.querySelectorAll(".leaflet-marker-icon, .lbl").forEach(n => n.style.removeProperty("--d"));
+  declutter();                                         // đặt lại tên địa danh khi marker đã về đúng kích thước
 }
 function playIntro() {
   const z = map.getZoom();

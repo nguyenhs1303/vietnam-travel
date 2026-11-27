@@ -20,9 +20,8 @@ function panelHeight() {
   const hero = matchMedia("(max-width:760px)").matches ? 110 : 150;
   return Math.max(110, Math.min(200, mapH - hero - 185));   // 185 ≈ tiêu đề + hàng tab + lề + mũi nhọn popup
 }
-function popupHtml(p, idx) {
+function popupHtml(p, idx, h = panelHeight()) {
   const tabs = POPUP_TABS.filter(t => !t.when || t.when(p));
-  const h = panelHeight();
   // Tab mặc định: Thời tiết; tải thời tiết bị lỗi (không có số liệu) thì mở Giới thiệu, tránh một ô gần như trống
   const wxOk = p.weather || weatherState === "loading";
   const active = tabs.some(t => t.id === p.activeTab) ? p.activeTab : (wxOk ? "wx" : "info");
@@ -51,16 +50,16 @@ function selectPopupTab(btn) {
     const on = t === btn;
     t.setAttribute("aria-selected", on);
     t.tabIndex = on ? 0 : -1;
-    document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+    pop.querySelector("#" + t.getAttribute("aria-controls")).hidden = !on;
   });
   btn.focus();
 }
-// (bắt ở pha capture vì Leaflet chặn click lan ra ngoài popup)
-map.getContainer().addEventListener("click", e => {
+// (bắt ở pha capture vì Leaflet chặn click lan ra ngoài popup; gắn vào document để dùng chung cho bảng trượt)
+document.addEventListener("click", e => {
   const btn = e.target.closest(".ptab");
   if (btn) selectPopupTab(btn);
 }, true);
-map.getContainer().addEventListener("keydown", e => {
+document.addEventListener("keydown", e => {
   const btn = e.target.closest(".ptab");
   if (!btn || (e.key !== "ArrowLeft" && e.key !== "ArrowRight")) return;
   e.preventDefault();
@@ -70,3 +69,85 @@ map.getContainer().addEventListener("keydown", e => {
 }, true);
 // Đóng popup thì lần sau mở lại về tab mặc định
 map.on("popupclose", () => PLACES.forEach(p => { p.activeTab = null; }));
+
+// ===== Mở thông tin địa danh: máy tính = popup Leaflet · màn hình nhỏ = bảng trượt từ dưới lên (bottom sheet) =====
+// Popup trên điện thoại che kín phần bản đồ vốn đã nhỏ; bảng trượt nằm đè lên thanh bên, bản đồ phía trên vẫn thấy marker.
+// Tạo ra: openPlace(), closePlace(), isPlaceOpen(), refreshPlace()
+const isSmallScreen = () => matchMedia("(max-width:760px)").matches;
+const sheet = document.createElement("section");
+sheet.id = "sheet";
+sheet.hidden = true;
+sheet.tabIndex = -1;
+sheet.setAttribute("role", "dialog");
+sheet.innerHTML = `<div class="sheet-grip" title="Kéo xuống để đóng"></div>
+  <button type="button" class="sheet-close" aria-label="Đóng">✕</button><div class="sheet-body"></div>`;
+document.body.appendChild(sheet);
+let sheetPlace = null, sheetHideTimer = null;
+
+// Ô nội dung tab: vừa màn hình (tổng bảng trượt khoảng 65% chiều cao), các tab cao bằng nhau để bảng không nhảy
+const sheetPanelHeight = () => Math.max(120, Math.min(230, Math.round(innerHeight * 0.64) - 270));
+function renderSheet() {
+  if (sheetPlace) sheet.querySelector(".sheet-body").innerHTML = popupHtml(sheetPlace, PLACES.indexOf(sheetPlace), sheetPanelHeight());
+}
+function openSheet(p) {
+  clearTimeout(sheetHideTimer);
+  sheetPlace = p;
+  renderSheet();
+  sheet.setAttribute("aria-label", p.name);
+  sheet.hidden = false;
+  sheet.getBoundingClientRect();                  // để hiệu ứng trượt lên chạy từ vị trí ẩn
+  sheet.classList.add("open");
+  map.getContainer().classList.add("popup-open");
+  sheet.focus({ preventScroll: true });
+  // Dời bản đồ cho marker nằm giữa phần bản đồ còn thấy được phía trên bảng trượt
+  const mapRect = map.getContainer().getBoundingClientRect();
+  const visibleH = Math.min(mapRect.height, innerHeight - sheet.offsetHeight - mapRect.top);
+  const pt = map.latLngToContainerPoint([p.lat, p.lng]).add([p.popup.options.offset[0], p.popup.options.offset[1] - 7]);
+  map.panBy([pt.x - mapRect.width / 2, pt.y - Math.max(60, visibleH / 2)]);
+}
+function closeSheet() {
+  if (!sheetPlace) return;
+  const p = sheetPlace;
+  sheetPlace = null;
+  p.activeTab = null;                             // lần sau mở lại về tab mặc định
+  sheet.classList.remove("open");
+  sheetHideTimer = setTimeout(() => { sheet.hidden = true; }, 260);
+  map.getContainer().classList.remove("popup-open");
+  if (sheet.contains(document.activeElement)) p.li?.querySelector(".row")?.focus({ preventScroll: true });
+}
+function openPlace(p) {
+  if (isSmallScreen()) { map.closePopup(); openSheet(p); }
+  else { closeSheet(); p.popup.setLatLng([p.lat, p.lng]).openOn(map); }
+}
+function closePlace() { map.closePopup(); closeSheet(); }
+const isPlaceOpen = p => sheetPlace === p || p.popup.isOpen();
+// Dựng lại nội dung đang mở (vd. thời tiết vừa tải xong)
+function refreshPlace(p) {
+  if (p.popup.isOpen()) p.popup.update();
+  if (sheetPlace === p) renderSheet();
+}
+
+sheet.querySelector(".sheet-close").onclick = closeSheet;
+document.addEventListener("keydown", e => { if (e.key === "Escape" && sheetPlace) closeSheet(); });
+map.on("click", closeSheet);                      // chạm vào bản đồ (ngoài marker) thì đóng, giống popup
+matchMedia("(max-width:760px)").addEventListener("change", closePlace);   // xoay máy / đổi cỡ cửa sổ qua ngưỡng
+// Kéo thanh nắm xuống để đóng
+const grip = sheet.querySelector(".sheet-grip");
+let dragStart = null;
+grip.addEventListener("pointerdown", e => {
+  dragStart = e.clientY;
+  sheet.style.transition = "none";
+  grip.setPointerCapture(e.pointerId);
+});
+grip.addEventListener("pointermove", e => {
+  if (dragStart !== null) sheet.style.transform = `translateY(${Math.max(0, e.clientY - dragStart)}px)`;
+});
+const endDrag = e => {
+  if (dragStart === null) return;
+  const moved = e.clientY - dragStart;
+  dragStart = null;
+  sheet.style.transition = sheet.style.transform = "";
+  if (moved > 70) closeSheet();
+};
+grip.addEventListener("pointerup", endDrag);
+grip.addEventListener("pointercancel", endDrag);

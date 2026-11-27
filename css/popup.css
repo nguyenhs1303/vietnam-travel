@@ -67,3 +67,25 @@ ul.foods { list-style:none; padding:0; margin:0; display:grid; gap:5px; }
 .wx-days span { font-size:16px; }
 .wx-days b { font-size:14px; color:#34505c; }
 .wx-src { margin-top:4px; font-size:11px; font-style:italic; color:#66644c; text-align:right; }
+
+/* ===== Bảng trượt từ dưới lên (màn hình nhỏ, thay cho popup — xem js/popup.js) ===== */
+#sheet { position:fixed; left:0; right:0; bottom:0; z-index:2000; max-height:85vh; overflow-y:auto; overscroll-behavior:contain;
+         padding:0 16px calc(12px + env(safe-area-inset-bottom)); color:var(--ink);
+         background-color:var(--paper); background-image:var(--grain); border-top:3px double var(--sepia); border-radius:14px 14px 0 0;
+         box-shadow:0 -6px 24px rgba(60,35,10,.35); transform:translateY(100%); transition:transform .26s ease, background-color .8s; }
+#sheet.open { transform:none; }
+#sheet[hidden] { display:none; }
+#sheet:focus { outline:none; }
+.sheet-grip { height:24px; margin:0 -16px; display:flex; align-items:center; justify-content:center; cursor:grab; touch-action:none; }
+.sheet-grip::before { content:""; width:42px; height:5px; border-radius:3px; background:var(--line); }
+.sheet-close { position:absolute; top:32px; right:14px; z-index:2; width:36px; height:36px; border-radius:50%; cursor:pointer;
+               border:1px solid var(--sepia); background:rgba(246,236,212,.92); color:var(--ink); font-size:16px; line-height:1; }
+.sheet-close:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+#sheet .popup .hero { margin:0 -16px 10px; }
+#sheet .popup .hero img { height:130px; border-radius:0; }
+#sheet .popup .credit { right:10px; }
+#sheet .ptabs { margin:0 -16px; padding:0 12px; }
+#sheet .ptab { padding:6px 2px 7px; font-size:13px; }   /* hàng tab cao hơn cho dễ chạm */
+#sheet .ppanel { margin-right:-8px; padding-right:8px; }
+.night .sheet-close { background:rgba(27,45,71,.92); }
+@media (prefers-reduced-motion:reduce) { #sheet { transition:none; } }

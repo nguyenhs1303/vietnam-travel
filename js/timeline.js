@@ -51,8 +51,9 @@ function showEvent(i, fly = true) {
   // Làm nổi bật marker của địa danh, các marker khác mờ đi
   ensureVisible(ev.p);
   PLACES.forEach(p => p.marker.getElement()?.classList.toggle("history-hot", p === ev.p));
+  declutter();                                     // tên của nơi đang xem được ưu tiên hiện
   if (fly) {
-    map.closePopup();
+    closePlace();
     const z = Math.max(6, Math.min(8, map.getZoom()));   // giữ ở mức bản đồ giấy
     // Dời tâm xuống nửa chiều cao thanh dòng thời gian → marker nằm giữa phần bản đồ còn thấy được phía trên thanh
     const barH = document.querySelector(".timeline-bar").offsetHeight + 20;
@@ -81,6 +82,7 @@ function setBarMode(mode) {
   else {
     stopHistoryPlay();
     PLACES.forEach(p => p.marker.getElement()?.classList.remove("history-hot"));
+    declutter();
   }
   document.querySelector(history ? ".tl-range" : ".season-bar .month.active")?.focus({ preventScroll: true });
 }

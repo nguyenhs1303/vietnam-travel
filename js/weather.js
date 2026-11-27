@@ -89,7 +89,7 @@ function refreshWeatherUI() {
   PLACES.forEach(p => {
     const mini = p.li?.querySelector(".wx-mini");
     if (mini) mini.innerHTML = weatherMini(p);
-    if (p.marker.isPopupOpen()) p.marker.getPopup().update();
+    refreshPlace(p);
   });
 }
 // Nút "Thử lại" (trong popup và khung Top 3): hiện lại trạng thái đang tải rồi gọi lại API

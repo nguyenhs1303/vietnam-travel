@@ -51,7 +51,8 @@ function updateSeasonBar() {
   const n = PLACES.filter(p => activeMonth && p.months.has(activeMonth)).length;
   document.querySelector(".season-title").innerHTML = activeMonth === 0
     ? "🗓️ Cả năm · chọn một tháng để xem nên đi đâu"
-    : `🗓️ Tháng ${activeMonth}${activeMonth === CURRENT_MONTH ? " (tháng này)" : ""} đi đâu? · <b>${n} nơi</b> đang vào mùa đẹp`;
+    : `🗓️ Tháng ${activeMonth}${activeMonth === CURRENT_MONTH ? `<span class="hide-sm"> (tháng này)</span>` : ""} đi đâu? · ` +
+      `<b>${n} nơi</b><span class="hide-sm"> đang vào mùa đẹp</span><span class="show-sm"> đang đẹp</span>`;
 }
 
 function setMonth(m) {

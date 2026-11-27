@@ -39,8 +39,9 @@ js/                   Mã — các file dùng chung biến toàn cục nên PH�
   places.js           Tiện ích chung: mùa đẹp, icon/màu theo loại, ảnh, ghi nguồn
   weather.js          Thời tiết Open-Meteo
   best-now.js         Chấm điểm "Đẹp nhất lúc này"
-  popup.js            Bảng thông tin dạng tab
+  popup.js            Bảng thông tin dạng tab (máy tính: popup · màn hình nhỏ: bảng trượt từ dưới lên)
   markers.js          Marker địa danh
+  declutter.js        Xếp vòng marker chồng nhau, ẩn/hiện tên địa danh để không đè lên nhau
   season.js           Thanh chọn tháng
   timeline.js         Dòng thời gian lịch sử
   list.js             Tìm kiếm, lọc, danh sách, bay tới địa danh

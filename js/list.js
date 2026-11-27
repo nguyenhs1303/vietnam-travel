@@ -98,6 +98,8 @@ function render({ refit = true } = {}) {
     listEl.appendChild(li);
   });
 
+  declutter();                                   // xếp lại marker chồng nhau + tên địa danh (declutter.js)
+
   if (refit && shown.length) {
     // Vừa khít các điểm đang hiện, nhưng không thu nhỏ dưới 5 (dưới 5 là nền OSM, không còn bản đồ giấy)
     const b = L.latLngBounds(shown.map(p => [p.lat, p.lng])).pad(0.2);
@@ -109,13 +111,13 @@ function focusPlace(p, li, fly = true) {
   document.querySelectorAll("#list li").forEach(x => x.classList.remove("active"));
   li?.classList.add("active");
   li?.scrollIntoView({ block:"nearest" });
-  if (!fly) return p.marker.openPopup();
+  if (!fly) return openPlace(p);
   // Giữ mức zoom đang xem: chỉ phóng to (tối thiểu 11), không bao giờ thu nhỏ ra
   const ll = L.latLng(p.lat, p.lng), zoom = Math.max(map.getZoom(), 11);
   // Đang thấy rõ điểm đó rồi thì mở popup ngay, không bay
-  if (map.getZoom() >= 11 && map.getBounds().pad(-0.15).contains(ll)) return p.marker.openPopup();
+  if (map.getZoom() >= 11 && map.getBounds().pad(-0.15).contains(ll)) return openPlace(p);
   // Mở popup sau khi bay xong, để bản đồ tự dịch cho popup nằm gọn trong khung
-  map.closePopup();
-  map.once("moveend", () => p.marker.openPopup());
+  closePlace();
+  map.once("moveend", () => openPlace(p));
   map.flyTo(ll, zoom, { duration: 1.2 });
 }
