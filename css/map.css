@@ -1,0 +1,77 @@
+/* ===== Bản đồ giấy ===== */
+#map { flex:1; position:relative; background-color:var(--sea); font-family:var(--serif); }
+/* Mép giấy ố vàng (chỉ đổ bóng ở mép) */
+#map::after { content:""; position:absolute; inset:0; z-index:401; pointer-events:none;
+              box-shadow:inset 0 0 70px rgba(120,78,30,.35), inset 0 0 14px rgba(90,55,20,.3); }
+.leaflet-container { font-family:var(--serif); }
+/* Nét mực run tay: đã làm gợn sẵn trong data/paper-data.js (không dùng bộ lọc SVG vì tốn công vẽ) */
+/* Nền OSM khi phóng to sâu: nhuộm sepia cho hợp tông giấy */
+.osm-sepia { filter:sepia(.7) saturate(.65) hue-rotate(-8deg) brightness(1.02) contrast(.95); }
+/* Chế độ chi tiết (zoom ≥ 9): bỏ toàn bộ lớp vẽ tay — đường bờ Natural Earth thô hơn OSM nên sẽ lệch khi phóng to */
+.detail .leaflet-ripple-pane, .detail .leaflet-land-pane, .detail .leaflet-neighbors-pane,
+.detail .leaflet-grid-pane, .detail .leaflet-labels-pane, .detail .leaflet-water-pane { display:none; }
+.world .leaflet-ripple-pane, .world .leaflet-land-pane, .world .leaflet-neighbors-pane,
+.world .leaflet-water-pane, .world .leaflet-grid-pane, .world .leaflet-labels-pane { display:none; }
+
+/* Chữ trên giấy */
+.lbl { position:absolute; white-space:nowrap; text-align:center; color:var(--ink);
+       text-shadow:0 0 3px var(--sea), 0 0 3px var(--sea), 0 0 6px var(--sea); }
+.sea-big { font-family:var(--display); font-weight:600; font-size:26px; letter-spacing:4px; color:#5b6b66; opacity:.85; }
+.sea-small { font-style:italic; font-size:15px; line-height:1.05; color:#5b6b66; }
+.isl { font-style:italic; font-size:14px; color:#5b4a35; }
+.river-lbl { font-style:italic; font-size:13px; color:#3f5f6c; }
+.range { font-variant:small-caps; letter-spacing:2px; font-size:14px; color:#6b4a28; opacity:.9; }
+.deg { font-size:12px; color:var(--sepia); opacity:.8; }
+.mtn { text-shadow:none; line-height:0; }
+.far .river-lbl, .far .range { display:none; }   /* mức toàn quốc: bớt chữ cho thoáng */
+
+/* Khung tiêu đề, la bàn, thước, nút zoom, ghi nguồn */
+.cartouche { margin:14px 14px 0 0 !important; background:var(--paper); border:1px solid var(--ink); outline:3px double var(--sepia);
+             outline-offset:3px; padding:8px 18px 6px; text-align:center; box-shadow:0 4px 12px rgba(60,35,10,.3); }
+.cartouche small { display:block; font-variant:small-caps; letter-spacing:3px; font-size:13px; color:var(--sepia); }
+.cartouche h2 { font-family:var(--display); font-weight:800; font-size:22px; line-height:1.05; margin:2px 0; color:var(--ink); }
+.cartouche .orn { font-size:16px; color:var(--sepia); line-height:1; }
+.compass { margin:0 14px 24px 0 !important; opacity:.9; pointer-events:none; }
+.compass .cmp { font-family:var(--display); font-size:11px; font-weight:600; fill:var(--ink); }
+/* Thước tỷ lệ: ô vừa khít chữ, cách nút +/− một khoảng */
+.scale-box { margin-top:10px !important; padding:1px 8px; border:1px solid var(--ink); border-radius:2px;
+             background:rgba(246,236,212,.9); color:var(--ink); font-family:var(--serif); font-size:12px; line-height:1.3;
+             white-space:nowrap; cursor:default; }
+.leaflet-bar { border:1px solid var(--ink) !important; box-shadow:none !important; }
+.leaflet-bar a { background:var(--paper); color:var(--ink); border-color:var(--line); font-family:var(--display); }
+.leaflet-bar a:hover { background:#efe0bd; }
+.leaflet-control-attribution { background:rgba(246,236,212,.85) !important; color:var(--sepia); font-size:11px; }
+.leaflet-control-attribution a { color:var(--accent); }
+
+/* ===== Marker địa danh ===== */
+.pin { display:block; position:relative; font-size:20px; text-align:center; line-height:32px; background:var(--bg, var(--paper));
+       border:2px solid var(--c, var(--ink)); border-radius:50%; width:36px; height:36px;
+       box-shadow:0 0 0 2px var(--paper), 0 3px 6px rgba(60,35,10,.35); transition:transform .15s; }
+.leaflet-marker-icon:hover .pin { transform:scale(1.15); }
+/* Ảnh tròn: viền giấy + vòng màu loại, ảnh nhuộm sepia (rê chuột hiện màu thật) */
+.pin.has-photo { width:44px; height:44px; border-width:2.5px; padding:2px; background:var(--paper); }
+.leaflet-marker-pane .pin.has-photo img { width:100%; height:100%; border-radius:50%; object-fit:cover; display:block;
+                                          filter:sepia(.7) saturate(.8) contrast(1.05); }
+.leaflet-marker-icon:hover .pin img { filter:none; }
+/* Huy hiệu icon nhỏ ở góc ảnh (marker và danh sách) */
+.has-photo .badge { position:absolute; right:-7px; bottom:-7px; width:22px; height:22px; border-radius:50%;
+                    background:var(--paper); border:1.5px solid var(--c); font-size:12px; line-height:19px; text-align:center;
+                    box-shadow:0 1px 3px rgba(60,35,10,.3); }
+/* Tên địa danh in nghiêng dưới marker */
+.place-name { position:absolute; left:50%; top:50px; transform:translateX(-50%); white-space:nowrap; font-style:italic;
+              font-size:15px; color:var(--ink); pointer-events:none;
+              text-shadow:0 0 3px var(--sea), 0 0 3px var(--sea), 0 0 5px var(--sea); }
+.far .leaflet-marker-icon .place-name { opacity:0; transition:opacity .15s; }
+.far .leaflet-marker-icon:hover .place-name { opacity:1; }
+.far .pin.has-photo { width:34px; height:34px; margin:5px; padding:1.5px; }
+.far .has-photo .badge { width:18px; height:18px; font-size:10px; line-height:15px; right:-6px; bottom:-6px; }
+/* Mùa đẹp: đang mùa thì toả sáng vàng nghệ, ngoài mùa thì xám mờ */
+/* Vòng sáng lan ra (phần tử giả ::before): chỉ đổi transform + opacity → card đồ hoạ tự chạy, không phải vẽ lại trang
+   (trước đây đổi box-shadow liên tục làm trình duyệt vẽ lại mỗi khung, tốn pin khi đứng yên) */
+.pin::before { content:""; position:absolute; inset:-6px; border-radius:50%; border:2px solid transparent;
+               pointer-events:none; opacity:0; }
+.in-season .pin::before { border-color:rgba(214,140,0,.85); animation:ring-out 1.8s ease-out infinite; }
+.off-season .pin { opacity:.4; filter:grayscale(1); }
+.off-season .place-name { opacity:.55; }
+@keyframes ring-out { 0% { transform:scale(1); opacity:.9; } 70%, 100% { transform:scale(1.75); opacity:0; } }
+@media (prefers-reduced-motion:reduce) { .in-season .pin::before { animation:none; opacity:1; } }

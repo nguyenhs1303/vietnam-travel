@@ -1,0 +1,46 @@
+/* ===== Dòng thời gian lịch sử ===== */
+.bar-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:5px; }
+.bar-head .season-title { margin-bottom:0; min-width:0; }
+.mode-btn { flex:0 0 auto; font:inherit; font-size:13px; padding:1px 10px; border:1px solid var(--sepia); border-radius:999px;
+            background:transparent; color:var(--ink); cursor:pointer; white-space:nowrap; }
+.mode-btn:hover { background:color-mix(in srgb, var(--season) 15%, transparent); border-color:var(--season); }
+.mode-btn:focus-visible, .tl-btn:focus-visible, .tl-place:focus-visible { outline:2px solid var(--season); outline-offset:1px; }
+/* Chế độ: chỉ hiện một trong hai thanh */
+.timeline-bar { display:none; }
+.history-mode .timeline-bar { display:block; }
+.history-mode .season-bar { display:none; }
+.timeline-bar { background:var(--paper); border:1px solid var(--ink); outline:2px solid var(--paper); border-radius:3px;
+                padding:7px 12px 6px; box-shadow:0 4px 14px rgba(60,35,10,.3); width:min(560px, calc(100vw - 500px)); }
+.tl-title { font-size:15px; }
+.tl-title b { color:var(--accent); }
+.tl-card { display:flex; gap:12px; align-items:flex-start; padding:6px 0 7px; border-top:1px dashed var(--line);
+           border-bottom:1px dashed var(--line); }
+.tl-year { flex:0 0 auto; min-width:96px; font-family:var(--display); font-weight:800; font-size:24px; line-height:1.05;
+           color:var(--accent); text-align:center; padding-top:2px; }
+.tl-body { min-width:0; flex:1; }
+.tl-head { display:block; font-family:var(--display); font-size:17px; line-height:1.2; }
+.tl-place { font:inherit; font-size:13px; font-style:italic; color:var(--sepia); background:none; border:none; padding:0; cursor:pointer;
+            text-decoration:underline dotted; text-underline-offset:3px; }
+.tl-place:hover { color:var(--accent); }
+.tl-text { margin-top:3px; font-size:14.5px; line-height:1.35; height:3.9em; overflow-y:auto; }
+.tl-controls { display:flex; align-items:center; gap:6px; margin-top:6px; }
+.tl-btn { flex:0 0 auto; width:30px; height:30px; border-radius:50%; border:1px solid var(--ink); background:var(--paper);
+          color:var(--ink); font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.tl-btn:hover:not(:disabled) { background:color-mix(in srgb, var(--season) 15%, var(--paper)); border-color:var(--season); }
+.tl-btn:disabled { opacity:.35; cursor:default; }
+.tl-play { background:var(--accent); border-color:var(--accent); color:#fff; }
+.tl-play:hover:not(:disabled) { background:var(--accent); filter:brightness(1.1); }
+.tl-track { flex:1; min-width:0; }
+.tl-range { width:100%; accent-color:var(--accent); cursor:pointer; margin:0; }
+.tl-ends { display:flex; justify-content:space-between; font-size:11px; font-style:italic; color:var(--muted); }
+/* Marker: nơi của mốc đang xem sáng đỏ son, các nơi khác mờ đi */
+.history-mode .leaflet-marker-icon:not(.history-hot) .pin { opacity:.3; filter:grayscale(1); }
+.history-mode .leaflet-marker-icon:not(.history-hot) .pin::before { animation:none; opacity:0; }
+.history-mode .leaflet-marker-icon:not(.history-hot) .place-name { opacity:.35; }
+.leaflet-marker-icon.history-hot { z-index:10000 !important; }
+.history-mode .history-hot .pin { opacity:1; filter:none; }
+.history-mode .history-hot .pin::before { border-color:rgba(178,40,20,.9); animation:ring-out 1.6s ease-out infinite; }
+.history-mode .history-hot .pin img { filter:none; }
+.far .leaflet-marker-icon.history-hot .place-name { opacity:1; }
+@media (prefers-reduced-motion:reduce) { .history-mode .history-hot .pin::before { animation:none; opacity:1; } }
+.night .tl-play { color:#1b1200; }

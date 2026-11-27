@@ -1,0 +1,9 @@
+# Cấu hình cá nhân của Claude Code / trình soạn thảo
+.claude/
+.vscode/
+.idea/
+
+# File rác của hệ điều hành
+Thumbs.db
+desktop.ini
+.DS_Store

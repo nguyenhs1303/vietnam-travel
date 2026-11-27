@@ -1,0 +1,67 @@
+/* ===== Giao diện giấy kiểu atlas cổ màu sepia ===== */
+:root {
+  --accent:#9b2c1c;          /* đỏ son mực dấu */
+  --ink:#4a2f17;             /* mực nâu */
+  --sepia:#7a5a35;
+  --muted:#8a6f4e;
+  --paper:#f6ecd4;           /* giấy sáng (sidebar, popup) */
+  --sea:#f1e5c8;             /* giấy của bản đồ = màu biển */
+  --line:#d9c7a1;            /* đường kẻ mảnh */
+  --season:#b86f00;          /* vàng nghệ — đánh dấu mùa đẹp */
+  --serif:"EB Garamond", Georgia, "Times New Roman", serif;
+  --display:"Playfair Display", Georgia, serif;
+}
+* { box-sizing:border-box; margin:0; }
+body { display:flex; height:100vh; font-family:var(--serif); font-size:16px; color:var(--ink); background:#3b2a19; }
+
+/* Vân giấy dùng chung (nhiễu SVG, không cần tải ảnh) */
+:root { --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .32 0 0 0 0 .15 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"); }
+#sidebar, #map { background-image:var(--grain); }
+
+/* ===== Thanh bên ===== */
+#sidebar { width:350px; display:flex; flex-direction:column; background-color:var(--paper); border-right:3px double var(--sepia); z-index:1000; }
+#sidebar header { padding:16px 16px 12px; border-bottom:1px solid var(--line); }
+h1 { font-family:var(--display); font-weight:800; font-size:24px; color:var(--ink); margin-bottom:10px; letter-spacing:.3px; }
+#search { width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:4px; font:inherit; font-size:15px;
+          background:#fffaf0; color:var(--ink); }
+#search:focus { outline:2px solid var(--sepia); outline-offset:0; }
+/* Nút ✕ xoá chữ trong ô tìm kiếm: vẽ lại theo tông mực, rê chuột hiện bàn tay */
+#search::-webkit-search-cancel-button {
+  -webkit-appearance:none; appearance:none; width:16px; height:16px; margin-left:6px; cursor:pointer; opacity:.6;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7.5' fill='%234a2f17'/%3E%3Cpath d='M5 5l6 6M11 5l-6 6' stroke='%23f6ecd4' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") center/16px no-repeat;
+  transition:opacity .15s, transform .15s; }
+#search::-webkit-search-cancel-button:hover { opacity:1; transform:scale(1.12); }
+.night #search::-webkit-search-cancel-button {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7.5' fill='%23e6cf96'/%3E%3Cpath d='M5 5l6 6M11 5l-6 6' stroke='%231b2d47' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E"); }
+#filters { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+.chip { border:1px solid var(--line); background:#fffaf0; border-radius:999px; padding:2px 11px; font:inherit; font-size:14px;
+        color:var(--ink); cursor:pointer; }
+.chip[style] { border-color:color-mix(in srgb, var(--c) 45%, var(--paper)); }
+.chip[style]:hover { background:var(--bg); }
+.chip.active { background:var(--c, var(--ink)); border-color:var(--c, var(--ink)); color:#fff; }
+
+#list { list-style:none; overflow-y:auto; flex:1; padding:6px 8px; }
+#list li { display:flex; align-items:center; gap:12px; padding:9px 8px; border-radius:4px; cursor:pointer;
+           border-bottom:1px dashed var(--line); }
+#list li:hover, #list li.active { background:#efe0bd; }
+#list .info { min-width:0; }
+#list b { display:block; font-size:17px; font-weight:600; line-height:1.2; }
+#list small { color:var(--muted); font-size:14px; font-style:italic; }
+.cat { display:inline-block; margin-left:4px; font-size:12px; font-style:normal; font-weight:600; color:var(--c); background:var(--bg);
+       border-radius:999px; padding:0 7px; white-space:nowrap; vertical-align:1px; }
+/* Ô icon (khi không có ảnh) */
+#list .ico { flex:0 0 auto; width:44px; height:44px; border-radius:6px; display:flex; align-items:center; justify-content:center;
+             font-size:24px; background:var(--bg, #f1ece0); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--c, #999) 30%, transparent); }
+/* Ô ảnh trong danh sách: như ảnh dán, viền giấy + viền màu loại */
+#list .ico.has-photo { position:relative; width:60px; height:60px; border-radius:4px; background:var(--paper); padding:3px;
+                       box-shadow:0 0 0 1.5px var(--c), 0 2px 5px rgba(60,35,10,.25); }
+#list .ico.has-photo img { width:100%; height:100%; border-radius:2px; object-fit:cover; display:block; filter:sepia(.35) saturate(.9); }
+#list li:hover .ico img, #list li.active .ico img { filter:none; }
+#list li.off { opacity:.5; }
+#list li.off .ico img { filter:grayscale(1) sepia(.3); }
+#list .tag { display:inline-block; margin-top:3px; font-size:12px; font-weight:600; font-style:normal; color:#7a4800;
+             background:#f7dfae; border-radius:999px; padding:0 8px; }
+/* Nhiệt độ nhỏ ở góc phải mỗi dòng */
+#list .wx-mini { margin-left:auto; flex:0 0 auto; align-self:flex-start; font-size:14px; font-weight:600; color:#3f5f6c;
+                 white-space:nowrap; padding-top:2px; }
+#list .wx-mini:empty { display:none; }

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bản đồ danh lam thắng cảnh Việt Nam</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇻🇳</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@600;800&display=swap">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <!-- Giao diện: nạp đúng thứ tự này (file sau ghi đè file trước) -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/best-now.css">
+  <link rel="stylesheet" href="css/map.css">
+  <link rel="stylesheet" href="css/popup.css">
+  <link rel="stylesheet" href="css/season-bar.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/night.css">
+  <link rel="stylesheet" href="css/timeline.css">
+  <link rel="stylesheet" href="css/intro.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <!-- Mẫu gạch chéo cho nước láng giềng (bản đồ ngày / đêm) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="7" height="7" fill="#eadfc4"/>
+        <line x1="0" y1="0" x2="0" y2="7" stroke="#b8a27a" stroke-width="0.9" opacity=".55"/>
+      </pattern>
+      <!-- Gạch chéo cho bản đồ đêm -->
+      <pattern id="hatch-night" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="7" height="7" fill="#17283f"/>
+        <line x1="0" y1="0" x2="0" y2="7" stroke="#34507a" stroke-width="0.9" opacity=".7"/>
+      </pattern>
+    </defs>
+  </svg>
+  <aside id="sidebar">
+    <header>
+      <h1>Khám phá Việt Nam</h1>
+      <input id="search" type="search" aria-label="Tìm địa điểm, tỉnh/thành hoặc món ăn" placeholder="Tìm địa điểm, tỉnh, món ăn… (vd: phở)">
+      <div id="filters"></div>
+      <!-- Top 3 nơi nên đi lúc này (chấm theo mùa + dự báo 3 ngày) -->
+      <details id="best-now" open>
+        <summary>✨ Đẹp nhất lúc này</summary>
+        <div class="best-body"><p class="best-wait">⏳ Đang tính…</p></div>
+      </details>
+    </header>
+    <ul id="list"></ul>
+  </aside>
+  <main id="map"></main>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <!-- Dữ liệu -->
+  <script src="data/data.js"></script>
+  <script src="data/photo-credits.js"></script>
+  <script src="data/vietnam-border.js"></script>
+  <script src="data/paper-data.js"></script>
+  <!-- Mã: các file dùng chung biến toàn cục nên phải nạp đúng thứ tự (xem README.md) -->
+  <script src="js/map.js"></script>
+  <script src="js/map-controls.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/places.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/best-now.js"></script>
+  <script src="js/popup.js"></script>
+  <script src="js/markers.js"></script>
+  <script src="js/season.js"></script>
+  <script src="js/timeline.js"></script>
+  <script src="js/list.js"></script>
+  <script src="js/intro.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

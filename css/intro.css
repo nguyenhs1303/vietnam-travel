@@ -1,0 +1,15 @@
+/* ===== Mở đầu: bản đồ tự vẽ (các lớp intro-hide-* được gỡ dần theo thời gian trong js/intro.js) ===== */
+.intro-anim .leaflet-ripple-pane, .intro-anim .leaflet-grid-pane { transition:opacity 1.2s ease; will-change:opacity; }
+/* will-change: trình duyệt tách lớp riêng cho card đồ hoạ làm mờ dần/phóng to, không phải vẽ lại cả bản đồ mỗi khung */
+.intro-anim .leaflet-labels-pane .lbl, .intro-anim .leaflet-marker-pane .leaflet-marker-icon > * { will-change:opacity, translate, scale; }
+.intro-hide-sea .leaflet-ripple-pane, .intro-hide-sea .leaflet-grid-pane { opacity:0; }
+.intro-hide-fill path.vn-land, .intro-hide-fill path.nb-land { fill-opacity:0; }
+/* Chữ và núi: rơi nhẹ xuống từng cái một (--d = độ trễ riêng) */
+.intro-anim .lbl { transition:opacity .5s ease var(--d, 0ms), translate .55s cubic-bezier(.3,1.6,.5,1) var(--d, 0ms); }
+.intro-hide-labels .lbl { opacity:0; translate:0 -12px; }
+/* Địa danh: bật lên (dùng thuộc tính scale riêng để không đụng transform định vị của Leaflet) */
+.intro-anim .leaflet-marker-pane .leaflet-marker-icon > * {
+  transition:opacity .45s ease var(--d, 0ms), scale .55s cubic-bezier(.3,1.7,.5,1) var(--d, 0ms) !important; }
+.intro-hide-pins .leaflet-marker-pane .leaflet-marker-icon > * { opacity:0 !important; scale:.2; }
+.cartouche { cursor:pointer; }
+.cartouche:hover { box-shadow:0 4px 16px rgba(60,35,10,.45); }

@@ -1,0 +1,53 @@
+/* ===== Màu các lớp bản đồ (lấy từ biến → đổi được ngày / đêm) ===== */
+:root { --land:#e7c98f; --land-hi:#e9d3a3; --nb-fill:url(#hatch); --nb-stroke:#a08a62; --ripple:#8f9d92;
+        --river:#4d6b78; --grid:#8b6b43; --territorial:#7a5a35; }
+/* (lớp sóng ven bờ vẽ bằng Canvas, màu lấy từ --ripple / --sea trong js/map.js → paintRipples) */
+.leaflet-container path.vn-land { fill:var(--land); stroke:var(--ink); }
+.leaflet-container path.nb-land { fill:var(--nb-fill); stroke:var(--nb-stroke); }
+.leaflet-container path.river { stroke:var(--river); }
+.leaflet-container path.grid-line, .leaflet-container path.territorial { stroke:var(--grid); }
+.mtn .m-body { fill:var(--land-hi); stroke:var(--ink); }
+.mtn .m-hatch { stroke:var(--ink); }
+.compass { color:var(--ink); }
+.compass .cf { fill:var(--land); }
+/* Chuyển ngày ↔ đêm mượt */
+body, #sidebar, #map, .leaflet-popup-content-wrapper, .cartouche, .season-bar, .theme-ctl { transition:background-color .8s, color .8s; }
+.leaflet-container path { transition:fill .8s, stroke .8s; }
+
+/* Công tắc ngày ⇄ đêm + nút Tự động */
+.theme-ctl { display:flex; align-items:center; gap:8px; background:var(--paper); color:var(--ink); border:1px solid var(--ink);
+             border-radius:999px; padding:4px 12px 4px 4px; box-shadow:0 2px 6px rgba(60,35,10,.2); }
+.day-night-switch { position:relative; flex:0 0 auto; width:64px; height:32px; padding:0; border-radius:999px; cursor:pointer;
+                    border:1.5px solid var(--ink); background:#f4dfa8; transition:background-color .5s; }
+.day-night-switch .sw-sun, .day-night-switch .sw-moon { position:absolute; top:50%; transform:translateY(-50%);
+                    font-size:14px; line-height:1; opacity:.45; }
+.day-night-switch .sw-sun { left:8px; }
+.day-night-switch .sw-moon { right:8px; }
+/* Núm gạt: ngày = mặt trời bên trái, đêm = trăng trượt sang phải */
+.day-night-switch .sw-knob { position:absolute; top:2px; left:2px; width:25px; height:25px; border-radius:50%;
+                    background:#fff6dc; border:1px solid var(--ink); box-shadow:0 1px 4px rgba(60,35,10,.35);
+                    display:flex; align-items:center; justify-content:center; font-size:14px;
+                    transition:left .4s cubic-bezier(.5,1.6,.5,1), background-color .5s; }
+.day-night-switch .sw-knob::after { content:"☀️"; }
+.day-night-switch[aria-checked="true"] { background:#1a2f50;
+                    background-image:radial-gradient(#e6cf96 .8px, transparent 1.2px); background-size:9px 9px; }
+.day-night-switch[aria-checked="true"] .sw-knob { left:calc(100% - 27px); background:#e6cf96; }
+.day-night-switch[aria-checked="true"] .sw-knob::after { content:"🌙"; }
+.day-night-switch:focus-visible, .theme-auto:focus-visible { outline:2px solid var(--season); outline-offset:2px; }
+/* Đồng hồ giờ Việt Nam */
+.theme-clock { display:flex; flex-direction:column; align-items:flex-start; line-height:1; padding-right:9px;
+               border-right:1px solid var(--line); }
+.clock-time { font-family:var(--display); font-weight:800; font-size:21px; letter-spacing:.5px; color:var(--ink);
+              font-variant-numeric:tabular-nums; }
+.clock-time .colon { display:inline-block; margin:0 1px; animation:clock-blink 2s steps(1) infinite; }
+@keyframes clock-blink { 50% { opacity:.2; } }
+@media (prefers-reduced-motion:reduce) { .clock-time .colon { animation:none; } }
+.clock-date { margin-top:3px; font-size:11px; font-style:italic; color:var(--muted); white-space:nowrap; }
+.night .clock-time { text-shadow:0 0 8px rgba(230,207,150,.35); }
+.theme-side { display:flex; flex-direction:column; align-items:flex-start; line-height:1.15; }
+.theme-auto { font:inherit; font-size:13px; padding:0 9px; border:1px solid var(--line); border-radius:999px;
+              background:transparent; color:var(--ink); cursor:pointer; }
+.theme-auto:hover { border-color:var(--season); }
+.theme-auto[aria-pressed="true"] { background:var(--season); border-color:var(--season); color:#fff; }
+.night .theme-auto[aria-pressed="true"] { color:#1b1200; }
+.theme-note { margin-top:2px; font-size:11px; font-style:italic; color:var(--muted); white-space:nowrap; }

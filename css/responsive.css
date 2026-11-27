@@ -1,0 +1,28 @@
+@media (max-width:760px) {
+  body { flex-direction:column-reverse; }
+  #sidebar { width:100%; height:42vh; border-right:none; border-top:3px double var(--sepia); overflow-y:auto; }
+  #list { flex:none; overflow:visible; }   /* cả thanh bên cuộn chung, mở khung Top 3 không đẩy tràn trang */
+  h1 { font-size:20px; }
+  .season-bar { max-width:calc(100vw - 20px); margin-bottom:22px !important; padding:5px 8px 4px; }
+  .season-title { font-size:13px; margin-bottom:4px; }
+  .month { width:32px; height:32px; font-size:12px; }
+  .month .bar { height:calc(3px + var(--h) * 8px); }
+  .popup-open .season-bar, .popup-open .timeline-bar, .popup-open .leaflet-top { display:none !important; }   /* popup đang mở thì nhường chỗ */
+  .timeline-bar { width:calc(100vw - 20px); margin-bottom:22px !important; padding:6px 9px 5px; }
+  .tl-year { min-width:70px; font-size:19px; }
+  .tl-head { font-size:15px; }
+  .tl-text { font-size:13.5px; height:2.7em; }
+  .tl-title { font-size:13px; }
+  .popup .hero img { height:110px; }
+  .ptab { font-size:11.5px; }
+  .cartouche { padding:4px 10px 3px; margin:8px 8px 0 0 !important; outline-width:2px; }
+  .cartouche h2 { font-size:16px; }
+  .cartouche small:last-child, .cartouche .orn { display:none; }
+  .compass { display:none; }
+  .theme-note, .clock-date { display:none; }
+  .clock-time { font-size:18px; }
+  .theme-clock { justify-content:center; }
+  .theme-ctl { padding-right:8px; }
+  .sea-big { font-size:18px; letter-spacing:2px; }
+  .place-name { font-size:13px; }
+}
