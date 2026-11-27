@@ -13,18 +13,32 @@
   #filters::-webkit-scrollbar { display:none; }
   .chip { flex:0 0 auto; white-space:nowrap; }
   #best-now { margin-top:8px; }
-  .season-bar { max-width:calc(100vw - 20px); margin-bottom:22px !important; padding:5px 8px 4px; }
+  .season-bar { max-width:calc(100vw - 20px); padding:5px 8px 4px; }
   .season-title { font-size:13px; margin-bottom:4px; cursor:pointer; }
   .season-bar.collapsed .bar-head { margin-bottom:0; }
   .months-toggle { display:flex; }
   .month { width:32px; height:32px; font-size:12px; }
   .month .bar { height:calc(3px + var(--h) * 8px); }
   .popup-open .season-bar, .popup-open .timeline-bar, .popup-open .leaflet-top { display:none !important; }   /* popup đang mở thì nhường chỗ */
-  .timeline-bar { width:calc(100vw - 20px); margin-bottom:22px !important; padding:6px 9px 5px; }
-  .tl-year { min-width:70px; font-size:19px; }
+  .timeline-bar { width:calc(100vw - 20px); padding:6px 9px 5px; }
+  .tl-year { min-width:62px; font-size:19px; }
   .tl-head { font-size:15px; }
-  .tl-text { font-size:13.5px; height:2.7em; }
   .tl-title { font-size:13px; }
+  /* Dòng thời gian gọn (trước che 48–63% bản đồ): tiêu đề "Dòng thời gian…" chỉ còn cho trình đọc màn hình, nút "Theo mùa"
+     thành nút tròn ở góc, đoạn mô tả ẩn sau "Đọc thêm", bỏ nhãn hai đầu thanh kéo */
+  .timeline-bar .bar-head { position:absolute; top:6px; right:9px; z-index:1; margin:0; }
+  .timeline-bar .tl-title, .timeline-bar .mode-label { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  .timeline-bar .mode-btn { width:40px; padding:0; display:flex; align-items:center; justify-content:center; }
+  .tl-card { border-top:none; padding:0 0 4px; }
+  .tl-body { padding-right:46px; }
+  .tl-text { display:none; font-size:13.5px; height:auto; max-height:5.5em; }
+  .timeline-bar.show-text .tl-text { display:block; }
+  .tl-more { display:inline-flex; align-items:center; margin-left:8px; padding:0 2px; font:inherit; font-size:13px; font-style:italic;
+             color:var(--sepia); background:none; border:none; cursor:pointer; text-decoration:underline dotted; text-underline-offset:3px; }
+  .tl-more[aria-expanded="true"] span { display:inline-block; transform:rotate(180deg); }
+  .tl-more:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+  .tl-ends { display:none; }
+  .tl-controls { margin-top:2px; }
   .popup .hero img { height:110px; }
   .ptab { font-size:11.5px; }
   /* Bản đồ chỉ còn khoảng nửa màn hình → bớt lớp phủ: bỏ khung tiêu đề (thanh bên đã có), la bàn, đồng hồ */
@@ -80,4 +94,30 @@
   .tl-btn { width:40px; height:40px; }
   .ptab { min-height:44px; }
   .tl-place { padding:6px 0; }
+  .tl-more { min-height:36px; }
+}
+
+/* Máy tính bảng dọc (761–1023px, vd. iPad 768px): vẫn bố cục máy tính nhưng bản đồ hẹp → thanh bên hẹp lại, khung tiêu đề
+   và đồng hồ gọn để công tắc ngày/đêm không đè khung tiêu đề; "Cả năm" dính đầu hàng tháng như trên điện thoại */
+@media (min-width:761px) and (max-width:1023px) {
+  #sidebar { width:300px; }
+  .cartouche { padding:4px 12px 3px; margin:10px 10px 0 0 !important; outline-width:2px; }
+  .cartouche .cart-title { font-size:17px; }
+  .cartouche small:last-child, .cartouche .orn { display:none; }
+  .clock-date, .theme-note { display:none; }
+  .compass { display:none; }                 /* trang trí; nhường chỗ cho thanh tháng (bản đồ chỉ rộng ~470px) */
+  .season-bar { max-width:calc(100vw - 330px); }
+  .timeline-bar { width:calc(100vw - 330px); }
+  .month.all { position:sticky; left:0; z-index:1; box-shadow:6px 0 6px -4px rgba(60,35,10,.35); }
+  .night .month.all:not(.active) { background:#22385a; }
+}
+
+/* Điện thoại rất hẹp (≤ 360px): nút "Theo mùa" xuống cuối hàng nút điều khiển để tiêu đề mốc + "Đọc thêm" đủ một dòng */
+@media (max-width:360px) {
+  .timeline-bar .bar-head { top:auto; bottom:5px; }
+  .tl-body { padding-right:0; }
+  .tl-controls { padding-right:46px; }
+  .tl-year { min-width:50px; font-size:16px; }
+  .tl-head { font-size:14px; }
+  .tl-more { margin-left:6px; }
 }

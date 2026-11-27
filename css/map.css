@@ -41,6 +41,8 @@
 .leaflet-bar a { background:var(--paper); color:var(--ink); border-color:var(--line); font-family:var(--display); }
 .leaflet-bar a:hover { background:#efe0bd; }
 .leaflet-control-attribution { background:rgba(246,236,212,.85) !important; color:var(--sepia); font-size:11px; }
+/* Khung góc dưới-trái (thanh tháng, dòng thời gian) đứng trên dòng ghi nguồn — --attrib-h do js/map-controls.js đo */
+.leaflet-bottom.leaflet-left .leaflet-control { margin-bottom:calc(var(--attrib-h, 16px) + 6px); }
 .leaflet-control-attribution a { color:var(--accent); }
 
 /* ===== Marker địa danh ===== */

@@ -22,6 +22,7 @@
 .tl-place { font:inherit; font-size:13px; font-style:italic; color:var(--sepia); background:none; border:none; padding:0; cursor:pointer;
             text-decoration:underline dotted; text-underline-offset:3px; }
 .tl-place:hover { color:var(--accent); }
+.tl-more { display:none; }   /* chỉ có trên màn hình nhỏ (css/responsive.css) */
 .tl-text { margin-top:3px; font-size:14.5px; line-height:1.35; height:3.9em; overflow-y:auto; }
 .tl-controls { display:flex; align-items:center; gap:6px; margin-top:6px; }
 .tl-btn { flex:0 0 auto; width:30px; height:30px; border-radius:50%; border:1px solid var(--ink); background:var(--paper);

@@ -20,12 +20,13 @@ timelineBar.onAdd = () => {
   L.DomEvent.disableScrollPropagation(el);
   el.innerHTML = `
     <div class="bar-head"><div class="tl-title">${deco("⏳")} Dòng thời gian lịch sử · <b>${EVENTS.length}</b> mốc</div>
-      <button type="button" class="mode-btn" data-mode="season" title="Quay lại chọn theo tháng">${deco("🗓️")} Theo mùa</button></div>
+      <button type="button" class="mode-btn" data-mode="season" title="Quay lại chọn theo tháng">${deco("🗓️")}<span class="mode-label"> Theo mùa</span></button></div>
     <div class="tl-card" aria-live="polite">
       <div class="tl-year"></div>
       <div class="tl-body"><b class="tl-head"></b>
         <button type="button" class="tl-place" title="Mở thông tin địa điểm"></button>
-        <p class="tl-text"></p></div>
+        <button type="button" class="tl-more" aria-expanded="false" aria-controls="tl-text">Đọc thêm<span aria-hidden="true"> ▾</span></button>
+        <p class="tl-text" id="tl-text"></p></div>
     </div>
     <div class="tl-controls">
       <button type="button" class="tl-btn tl-prev" aria-label="Mốc trước" title="Mốc trước">${TL_ICON.prev}</button>
@@ -40,6 +41,11 @@ timelineBar.onAdd = () => {
   el.querySelector(".tl-prev").onclick = () => { stopHistoryPlay(); showEvent(historyIdx - 1); };
   el.querySelector(".tl-next").onclick = () => { stopHistoryPlay(); showEvent(historyIdx + 1); };
   el.querySelector(".tl-play").onclick = () => historyTimer ? stopHistoryPlay() : startHistoryPlay();
+  // Màn hình nhỏ: đoạn mô tả mốc ẩn sau nút "Đọc thêm" (thanh đầy đủ che hơn nửa bản đồ); máy tính luôn hiện, không có nút
+  el.querySelector(".tl-more").onclick = e => {
+    const open = el.classList.toggle("show-text");
+    e.currentTarget.setAttribute("aria-expanded", open);
+  };
   el.querySelector(".tl-place").onclick = () => { stopHistoryPlay(); const p = EVENTS[historyIdx].p; focusPlace(p, p.li, false); };
   return el;
 };

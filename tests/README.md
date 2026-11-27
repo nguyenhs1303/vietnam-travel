@@ -41,7 +41,7 @@ Tiện ích của `app`: `open(tên)`, `isOpen(tên)`, `type(chữ)`, `said()` (
 | `list.spec.js` | Tìm kiếm, lọc loại, sắp theo mùa, khung "Không tìm thấy", chọn địa danh (bay tới, chọn nhanh liên tiếp) |
 | `popup.spec.js` | Tab, thời tiết lỗi / thử lại, popup không đè khung nào (16 nơi × 2 cỡ màn hình), focus bàn phím, popup khi lọc / zoom |
 | `map.spec.js` | Marker chồng nhau được xếp vòng, tên không đè nhau, trạng thái mùa, dòng thời gian lịch sử |
-| `mobile.spec.js` | Bảng trượt (mở / đóng / kéo / Esc), thanh tháng thu gọn, chip một hàng, bản đồ bị che ≤ 18%, thấy ngay địa danh đầu tiên, vùng chạm, ô tìm 16px, dvh, màn hình thấp, 320px |
+| `mobile.spec.js` | Bảng trượt (mở / đóng / kéo / Esc), thanh tháng thu gọn, chip một hàng, bản đồ bị che ≤ 18%, thấy ngay địa danh đầu tiên, dòng thời gian gọn, dòng ghi nguồn không bị đè (6 cỡ màn hình), iPad dọc, vùng chạm, ô tìm 16px, dvh, màn hình thấp, 320px |
 | `a11y.spec.js` | axe-core 0 vi phạm (ngày, đêm, lịch sử, mobile), lối tắt, viền focus, tên cho trình đọc màn hình, thông báo, tương phản ngày / đêm, chuyển động dừng trong 5 giây |
 
 Bài có `[review #n]` trong tên là bài hồi quy cho lỗi số n trong bản code review — đừng xoá khi lỗi "trông như đã hết".

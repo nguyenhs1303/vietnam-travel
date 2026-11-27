@@ -43,3 +43,10 @@ function updateScale() {
 }
 map.on("zoomend moveend", updateScale);
 updateScale();
+
+// Dòng ghi nguồn (bắt buộc theo giấy phép OpenStreetMap) không được bị thanh tháng / dòng thời gian đè: ghi chiều cao
+// thật của nó (đổi khi xuống 2 dòng trên màn hình hẹp) vào biến --attrib-h → CSS nâng các khung góc dưới-trái lên đúng bằng
+const attribEl = map.attributionControl.getContainer();
+const syncAttribHeight = () => map.getContainer().style.setProperty("--attrib-h", attribEl.offsetHeight + "px");
+new ResizeObserver(syncAttribHeight).observe(attribEl);
+syncAttribHeight();
