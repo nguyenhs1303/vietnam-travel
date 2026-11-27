@@ -65,7 +65,7 @@
 /* Vị trí khác của tên khi chỗ dưới ảnh đã bị chiếm (js/declutter.js chọn) */
 .place-name.at-r, .place-name.at-l { top:50%; transform:translateY(-50%); }
 .place-name.at-r { left:calc(100% + 8px); }
-.place-name.at-l { left:auto; right:calc(100% + 4px); }
+.place-name.at-l { left:auto; right:calc(100% + 8px); }
 .place-name.at-t { top:auto; bottom:calc(100% + 4px); }
 /* Tên đè lên tên / ảnh khác thì ẩn (js/declutter.js); rê chuột hoặc focus bàn phím vào marker thì hiện lại */
 .leaflet-marker-icon .place-name { transition:opacity .15s; }

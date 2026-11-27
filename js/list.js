@@ -37,18 +37,27 @@ function clearFilters() {
   setActiveCat("all");
 }
 
-// Thông báo khi không có kết quả (role="status" để trình đọc màn hình đọc lên)
+// Khung "Không tìm thấy" (chỉ để nhìn; trình đọc màn hình nghe câu tương ứng qua announceResults → announce)
 const emptyEl = document.createElement("div");
 emptyEl.id = "list-empty";
-emptyEl.setAttribute("role", "status");
+emptyEl.hidden = true;
 listEl.before(emptyEl);
+const emptyMessage = () => {
+  const raw = searchEl.value.trim();
+  return "Không tìm thấy nơi nào" + (raw ? ` khớp “${raw}”` : "") +
+         (activeCat !== "all" ? ` trong mục ${CATEGORIES[activeCat].label}` : "") + ".";
+};
 
-const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").toLowerCase();
+// Bỏ dấu để gõ không dấu vẫn tìm được. Chuyển chữ thường TRƯỚC rồi mới đổi đ → d (trước đây "Đ" hoa không được đổi
+// → gõ "da lat", "dong van" không ra Đà Lạt, Đồng Văn)
+const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d");
 
 function renderEmpty(show) {
-  emptyEl.replaceChildren();
   emptyEl.hidden = !show;
-  if (!show) return;
+  if (!show) { emptyEl.replaceChildren(); delete emptyEl.dataset.msg; return; }
+  if (emptyEl.dataset.msg === emptyMessage()) return;   // nội dung không đổi → giữ nguyên (nút "Xoá" đang focus không bị thay)
+  emptyEl.dataset.msg = emptyMessage();
+  emptyEl.replaceChildren();
   const raw = searchEl.value.trim();
   const msg = document.createElement("p");
   msg.append("Không tìm thấy nơi nào");
@@ -65,10 +74,10 @@ function renderEmpty(show) {
   emptyEl.append(msg, hint, btn);
 }
 
-// Đọc số kết quả sau khi tìm / lọc (không có kết quả thì khung "Không tìm thấy" đã tự đọc, role="status")
+// Đọc số kết quả sau khi tìm / lọc; không có kết quả thì đọc câu "Không tìm thấy…" (thay cho câu số lượng đang chờ)
 function announceResults(delay = 0) {
   const n = listEl.children.length;
-  if (!n) return;
+  if (!n) return announce(emptyMessage() + " Có nút Xoá tìm kiếm và bộ lọc.", delay);
   const raw = searchEl.value.trim();
   announce(`Hiện ${n} trên ${PLACES.length} nơi` + (raw ? ` khớp “${raw}”` : "") +
            (activeCat !== "all" ? ` trong mục ${CATEGORIES[activeCat].label}` : ""), delay);
@@ -81,6 +90,9 @@ function render({ refit = true } = {}) {
     (!q || norm(p.name + " " + p.region + " " + (p.foods || []).map(f => f[0]).join(" ")).includes(q)));   // tìm cả theo tên món ăn
   // Nơi đang mùa đẹp lên đầu danh sách (sort ổn định, giữ thứ tự Bắc → Nam)
   shown.sort((a, b) => inSeason(b) - inSeason(a));
+
+  // Nơi đang mở thông tin mà bị bộ lọc ẩn đi → đóng luôn (không thì popup nằm lơ lửng chỗ marker đã biến mất)
+  if (PLACES.some(p => isPlaceOpen(p) && !shown.includes(p))) closePlace();
 
   listEl.innerHTML = "";
   renderEmpty(!shown.length);
@@ -118,7 +130,11 @@ function render({ refit = true } = {}) {
   }
 }
 
+// Bay tới nơi A rồi chọn ngay nơi B khi chưa bay xong: huỷ lời hẹn "bay xong thì mở A", chỉ mở B
+let pendingOpen = null;
+function cancelPendingOpen() { if (pendingOpen) map.off("moveend", pendingOpen); pendingOpen = null; }
 function focusPlace(p, li, fly = true) {
+  cancelPendingOpen();
   document.querySelectorAll("#list li").forEach(x => x.classList.remove("active"));
   li?.classList.add("active");
   li?.scrollIntoView({ block:"nearest" });
@@ -130,6 +146,9 @@ function focusPlace(p, li, fly = true) {
   if (map.getZoom() >= 7 && map.getBounds().pad(-0.15).contains(ll)) return openPlace(p);
   // Mở popup sau khi bay xong, để bản đồ tự dịch cho popup nằm gọn trong khung
   closePlace();
-  map.once("moveend", () => openPlace(p));
   map.flyTo(ll, zoom, { duration: 1.2 });
+  // Đăng ký SAU flyTo: flyTo dừng chuyển động đang dở (hiệu ứng zoom lúc mở trang, quán tính khi vừa kéo bản đồ) và việc
+  // dừng đó phát "moveend" ngay — đăng ký trước thì popup mở luôn lúc vừa cất cánh, rồi bản đồ mới bay đi.
+  pendingOpen = () => { pendingOpen = null; openPlace(p); };
+  map.once("moveend", pendingOpen);
 }

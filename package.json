@@ -1,0 +1,14 @@
+{
+  "name": "vietnam-travel",
+  "private": true,
+  "description": "Bản đồ danh thắng Việt Nam — trang tĩnh; package.json này chỉ dùng cho bộ kiểm thử",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "axe-core": "4.10.2"
+  }
+}

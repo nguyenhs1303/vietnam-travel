@@ -46,13 +46,20 @@ const ROMAN = ["I", "II", "III"];
 function renderBestNow() {
   const box = document.querySelector("#best-now .best-body");
   if (!box) return;
+  // Focus đang ở trong khung (nút "Thử lại" / một nơi trong Top 3) → vẽ lại xong đưa focus về chỗ tương ứng
+  const focused = box.contains(document.activeElement) ? document.activeElement : null;
+  const restore = () => {
+    if (!focused) return;
+    const same = focused.dataset.i && box.querySelector(`button[data-i="${focused.dataset.i}"]`);
+    (same || box.querySelector("button") || document.querySelector("#best-now summary")).focus({ preventScroll: true });
+  };
   const ranked = PLACES.map(p => ({ p, r: (p.rating = scorePlace(p)) })).filter(x => x.r)
                        .sort((a, b) => b.r.score - a.r.score);
   if (!ranked.length) {
     box.innerHTML = weatherState === "error"
       ? `<p class="best-wait">Chưa tải được thời tiết, chưa xếp hạng được.</p><button type="button" class="wx-retry">${deco("↻")} Thử lại</button>`
       : `<p class="best-wait">${deco("⏳")} Đang tính…</p>`;
-    return;
+    return restore();
   }
   ranked.forEach(({ p }, i) => { p.rank = i + 1; });
   box.innerHTML = `<ol class="best-list">${ranked.slice(0, 3).map(({ p, r }, i) => `
@@ -67,4 +74,5 @@ function renderBestNow() {
     ensureVisible(p);
     focusPlace(p, p.li, true);
   });
+  restore();
 }

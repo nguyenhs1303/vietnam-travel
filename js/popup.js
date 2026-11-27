@@ -143,8 +143,10 @@ function returnFocus() {
   if (el?.isConnected) el.focus({ preventScroll: true });
 }
 function openPlace(p) {
+  // Ghi lại ai mở: nút đang focus; focus đang ở <body> → không có ai (đừng giữ giá trị cũ từ lần trước).
+  // Focus đang nằm trong chính popup / bảng trượt (mở nơi khác từ bên trong) → giữ người mở ban đầu.
   const a = document.activeElement;
-  if (a && a !== document.body && !a.closest(".leaflet-popup, #sheet")) placeOpener = a;
+  if (!a?.closest(".leaflet-popup, #sheet")) placeOpener = a && a !== document.body ? a : null;
   if (isSmallScreen()) { map.closePopup(); openSheet(p); }
   else {
     closeSheet();
@@ -180,8 +182,12 @@ function refreshPlace(p) {
   const root = p.popup.isOpen() ? p.popup.getElement() : sheetPlace === p ? sheet : null;
   if (!root) return;
   const hadFocus = root.contains(document.activeElement);
+  const scroll = root.querySelector(".ppanel:not([hidden])")?.scrollTop || 0;
   if (p.popup.isOpen()) p.popup.update(); else renderSheet();
-  if (hadFocus) focusPlaceTitle(p.popup.isOpen() ? p.popup.getElement() : sheet);
+  const newRoot = p.popup.isOpen() ? p.popup.getElement() : sheet;
+  const panel = newRoot.querySelector(".ppanel:not([hidden])");
+  if (panel) panel.scrollTop = scroll;                // giữ chỗ đang đọc
+  if (hadFocus) focusPlaceTitle(newRoot);
 }
 
 sheet.querySelector(".sheet-close").onclick = closeSheet;
