@@ -33,7 +33,7 @@
 .ptab[aria-selected="true"] { background:var(--paper); color:var(--ink); font-weight:600; border-color:var(--sepia);
                               border-bottom:1px solid var(--paper); }
 .ptab:focus-visible { outline:2px solid var(--season); outline-offset:-2px; }
-.ppanel { padding-top:8px; height:200px; overflow-y:auto; margin-right:-12px; padding-right:12px; }
+.ppanel { position:relative; padding-top:8px; height:200px; overflow-y:auto; margin-right:-12px; padding-right:12px; }
 .ppanel:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; border-radius:3px; }   /* focus được để cuộn bằng phím */
 .ppanel .wx { margin-top:0; }
 .ppanel .desc { margin-top:0 !important; }
