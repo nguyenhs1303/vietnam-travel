@@ -61,8 +61,26 @@
 .place-name { position:absolute; left:50%; top:50px; transform:translateX(-50%); white-space:nowrap; font-style:italic;
               font-size:15px; color:var(--ink); pointer-events:none;
               text-shadow:0 0 3px var(--sea), 0 0 3px var(--sea), 0 0 5px var(--sea); }
-.far .leaflet-marker-icon .place-name { opacity:0; transition:opacity .15s; }
-.far .leaflet-marker-icon:hover .place-name { opacity:1; }
+.far .place-name { top:44px; font-size:14px; }
+/* Vị trí khác của tên khi chỗ dưới ảnh đã bị chiếm (js/declutter.js chọn) */
+.place-name.at-r, .place-name.at-l { top:50%; transform:translateY(-50%); }
+.place-name.at-r { left:calc(100% + 8px); }
+.place-name.at-l { left:auto; right:calc(100% + 4px); }
+.place-name.at-t { top:auto; bottom:calc(100% + 4px); }
+/* Tên đè lên tên / ảnh khác thì ẩn (js/declutter.js); rê chuột hoặc focus bàn phím vào marker thì hiện lại */
+.leaflet-marker-icon .place-name { transition:opacity .15s; }
+.leaflet-marker-icon .place-name.name-hidden { opacity:0 !important; }
+.leaflet-marker-icon:hover .place-name.name-hidden,
+.leaflet-marker-icon:focus-visible .place-name.name-hidden { opacity:1 !important; }
+.leaflet-marker-icon:hover, .leaflet-marker-icon:focus-visible { z-index:9000 !important; }
+.leaflet-marker-icon:focus-visible { outline:none; }
+.leaflet-marker-icon:focus-visible .pin { box-shadow:0 0 0 2px var(--paper), 0 0 0 4px var(--accent); }
+/* Marker bị dời khỏi chỗ chồng nhau: nét mực mảnh chỉ về vị trí thật, đầu nét là chấm tròn */
+.leader { position:absolute; left:50%; top:50%; height:0; border-top:1.2px solid var(--ink); opacity:.75;
+          transform-origin:0 0; pointer-events:none; z-index:-1; }
+.leader::after { content:""; position:absolute; right:-3px; top:-3.6px; width:6px; height:6px; border-radius:50%;
+                 background:var(--ink); }
+.leaflet-zoom-anim .leader { opacity:0; }
 .far .pin.has-photo { width:34px; height:34px; margin:5px; padding:1.5px; }
 .far .has-photo .badge { width:18px; height:18px; font-size:10px; line-height:15px; right:-6px; bottom:-6px; }
 /* Mùa đẹp: đang mùa thì toả sáng vàng nghệ, ngoài mùa thì xám mờ */
@@ -71,7 +89,8 @@
 .pin::before { content:""; position:absolute; inset:-6px; border-radius:50%; border:2px solid transparent;
                pointer-events:none; opacity:0; }
 .in-season .pin::before { border-color:rgba(214,140,0,.85); animation:ring-out 1.8s ease-out infinite; }
-.off-season .pin { opacity:.4; filter:grayscale(1); }
-.off-season .place-name { opacity:.55; }
+/* Ngoài mùa: nhạt bớt nhưng vẫn rõ là bấm được (trước đây mờ 40% + xám hẳn trông như bị vô hiệu hoá) */
+.off-season .pin { opacity:.8; filter:grayscale(.7); }
+.off-season .place-name { opacity:.8; }
 @keyframes ring-out { 0% { transform:scale(1); opacity:.9; } 70%, 100% { transform:scale(1.75); opacity:0; } }
 @media (prefers-reduced-motion:reduce) { .in-season .pin::before { animation:none; opacity:1; } }

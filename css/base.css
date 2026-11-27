@@ -3,11 +3,12 @@
   --accent:#9b2c1c;          /* đỏ son mực dấu */
   --ink:#4a2f17;             /* mực nâu */
   --sepia:#7a5a35;
-  --muted:#8a6f4e;
+  --muted:#76593a;           /* chữ phụ: ≥ 4.5:1 trên giấy và nền rê chuột */
   --paper:#f6ecd4;           /* giấy sáng (sidebar, popup) */
   --sea:#f1e5c8;             /* giấy của bản đồ = màu biển */
   --line:#d9c7a1;            /* đường kẻ mảnh */
-  --season:#b86f00;          /* vàng nghệ — đánh dấu mùa đẹp */
+  --season:#b86f00;          /* vàng nghệ — đánh dấu mùa đẹp (viền, cột, nền nhạt) */
+  --season-ink:#9a5c00;      /* vàng nghệ đậm — cho chữ, và nền có chữ trắng (đạt tương phản 4.5:1) */
   --serif:"EB Garamond", Georgia, "Times New Roman", serif;
   --display:"Playfair Display", Georgia, serif;
 }
@@ -24,6 +25,7 @@ body { display:flex; height:100vh; font-family:var(--serif); font-size:16px; col
 h1 { font-family:var(--display); font-weight:800; font-size:24px; color:var(--ink); margin-bottom:10px; letter-spacing:.3px; }
 #search { width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:4px; font:inherit; font-size:15px;
           background:#fffaf0; color:var(--ink); }
+#search::placeholder { color:var(--muted); opacity:1; }
 #search:focus { outline:2px solid var(--sepia); outline-offset:0; }
 /* Nút ✕ xoá chữ trong ô tìm kiếm: vẽ lại theo tông mực, rê chuột hiện bàn tay */
 #search::-webkit-search-cancel-button {
@@ -37,14 +39,28 @@ h1 { font-family:var(--display); font-weight:800; font-size:24px; color:var(--in
 .chip { border:1px solid var(--line); background:#fffaf0; border-radius:999px; padding:2px 11px; font:inherit; font-size:14px;
         color:var(--ink); cursor:pointer; }
 .chip[style] { border-color:color-mix(in srgb, var(--c) 45%, var(--paper)); }
-.chip[style]:hover { background:var(--bg); }
+.chip[style]:not(.active):hover { background:var(--bg); }   /* chip đang chọn giữ nền đậm, không thì chữ trắng trên nền nhạt */
+.chip:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
 .chip.active { background:var(--c, var(--ink)); border-color:var(--c, var(--ink)); color:#fff; }
 
 #list { list-style:none; overflow-y:auto; flex:1; padding:6px 8px; }
-#list li { display:flex; align-items:center; gap:12px; padding:9px 8px; border-radius:4px; cursor:pointer;
-           border-bottom:1px dashed var(--line); }
+#list li { border-radius:4px; border-bottom:1px dashed var(--line); }
 #list li:hover, #list li.active { background:#efe0bd; }
-#list .info { min-width:0; }
+/* Cả dòng là một nút (bàn phím Tab / Enter được) — bỏ kiểu nút mặc định của trình duyệt */
+#list .row { width:100%; display:flex; align-items:center; gap:12px; padding:9px 8px; border:none; border-radius:4px;
+             background:none; font:inherit; color:inherit; text-align:left; cursor:pointer; }
+#list .row:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
+#list .info { min-width:0; display:block; }
+
+/* Không có kết quả tìm kiếm */
+#list-empty { margin:14px 16px 4px; padding:12px 14px; border:1px dashed var(--sepia); border-radius:4px; font-size:15px; line-height:1.35; }
+#list-empty[hidden] { display:none; }
+#list-empty b { font-weight:600; }
+#list-empty small { display:block; margin-top:4px; font-size:14px; font-style:italic; color:var(--muted); }
+.empty-reset, .wx-retry { margin-top:9px; font:inherit; font-size:14px; padding:3px 12px; border:1px solid var(--sepia); border-radius:999px;
+                          font-style:normal; background:var(--paper); color:var(--ink); cursor:pointer; }
+.empty-reset:hover, .wx-retry:hover { border-color:var(--season); background:color-mix(in srgb, var(--season) 12%, var(--paper)); }
+.empty-reset:focus-visible, .wx-retry:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
 #list b { display:block; font-size:17px; font-weight:600; line-height:1.2; }
 #list small { color:var(--muted); font-size:14px; font-style:italic; }
 .cat { display:inline-block; margin-left:4px; font-size:12px; font-style:normal; font-weight:600; color:var(--c); background:var(--bg);
@@ -57,7 +73,7 @@ h1 { font-family:var(--display); font-weight:800; font-size:24px; color:var(--in
                        box-shadow:0 0 0 1.5px var(--c), 0 2px 5px rgba(60,35,10,.25); }
 #list .ico.has-photo img { width:100%; height:100%; border-radius:2px; object-fit:cover; display:block; filter:sepia(.35) saturate(.9); }
 #list li:hover .ico img, #list li.active .ico img { filter:none; }
-#list li.off { opacity:.5; }
+#list li.off .ico { opacity:.65; }   /* ngoài mùa: chỉ làm nhạt ảnh, giữ chữ đủ đậm để đọc */
 #list li.off .ico img { filter:grayscale(1) sepia(.3); }
 #list .tag { display:inline-block; margin-top:3px; font-size:12px; font-weight:600; font-style:normal; color:#7a4800;
              background:#f7dfae; border-radius:999px; padding:0 8px; }

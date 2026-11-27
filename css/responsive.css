@@ -15,14 +15,27 @@
   .tl-title { font-size:13px; }
   .popup .hero img { height:110px; }
   .ptab { font-size:11.5px; }
-  .cartouche { padding:4px 10px 3px; margin:8px 8px 0 0 !important; outline-width:2px; }
-  .cartouche h2 { font-size:16px; }
-  .cartouche small:last-child, .cartouche .orn { display:none; }
-  .compass { display:none; }
-  .theme-note, .clock-date { display:none; }
-  .clock-time { font-size:18px; }
-  .theme-clock { justify-content:center; }
-  .theme-ctl { padding-right:8px; }
+  /* Bản đồ chỉ còn khoảng nửa màn hình → bớt lớp phủ: bỏ khung tiêu đề (thanh bên đã có), la bàn, đồng hồ */
+  .cartouche, .compass { display:none; }
+  .theme-clock, .theme-note { display:none; }
+  .theme-ctl { gap:6px; padding:3px 6px 3px 3px; }
+  .day-night-switch { width:50px; height:26px; }
+  .day-night-switch .sw-knob { width:20px; height:20px; font-size:11px; }
+  .day-night-switch[aria-checked="true"] .sw-knob { left:calc(100% - 22px); }
+  .day-night-switch .sw-sun, .day-night-switch .sw-moon { font-size:11px; }
+  .day-night-switch .sw-sun { left:6px; }
+  .day-night-switch .sw-moon { right:6px; }
+  .theme-auto { padding:1px 9px; }
+  /* Nút "Cả năm" luôn thấy được ở đầu hàng tháng, kể cả khi hàng đã cuộn tới tháng hiện tại */
+  .month.all { position:sticky; left:0; z-index:1; box-shadow:6px 0 6px -4px rgba(60,35,10,.35); }
+  .night .month.all:not(.active) { background:#22385a; }
+  .hide-sm { display:none; }
+  .show-sm { display:inline; }
   .sea-big { font-size:18px; letter-spacing:2px; }
-  .place-name { font-size:13px; }
+  .place-name, .far .place-name { font-size:13px; }
 }
+
+/* Chữ chỉ hiện ở màn hình nhỏ (bản rút gọn của câu dài) */
+@media (min-width:761px) { .show-sm { display:none; } }
+/* Màn hình cảm ứng nhỏ: phóng to/thu nhỏ bằng hai ngón, bỏ nút +/− cho đỡ che bản đồ */
+@media (max-width:760px) and (pointer:coarse) { .leaflet-control-zoom { display:none; } }

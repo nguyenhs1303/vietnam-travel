@@ -6,6 +6,13 @@
 const EVENTS = HISTORY.map(h => ({ ...h, p: PLACES.find(p => p.name === h.place) })).filter(h => h.p);
 let historyIdx = 0, historyTimer = null;
 
+// Biểu tượng nút (SVG nét đặc, theo màu chữ): mốc trước ⏮ · chạy ▶ · dừng ❚❚ · mốc sau ⏭ — trước đây "chạy" và "mốc sau" cùng là ▶
+const TL_ICON = {
+  prev:  `<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M3 2h2v12H3zM14 2v12L6 8z" fill="currentColor"/></svg>`,
+  play:  `<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M4 2l10 6-10 6z" fill="currentColor"/></svg>`,
+  pause: `<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M3 2h3.5v12H3zM9.5 2H13v12H9.5z" fill="currentColor"/></svg>`,
+  next:  `<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M11 2h2v12h-2zM2 2v12l8-6z" fill="currentColor"/></svg>`,
+};
 const timelineBar = L.control({ position: "bottomleft" });
 timelineBar.onAdd = () => {
   const el = L.DomUtil.create("div", "timeline-bar");
@@ -21,13 +28,13 @@ timelineBar.onAdd = () => {
         <p class="tl-text"></p></div>
     </div>
     <div class="tl-controls">
-      <button type="button" class="tl-btn tl-prev" aria-label="Mốc trước">◀</button>
-      <button type="button" class="tl-btn tl-play" aria-label="Tự chạy">▶</button>
+      <button type="button" class="tl-btn tl-prev" aria-label="Mốc trước" title="Mốc trước">${TL_ICON.prev}</button>
+      <button type="button" class="tl-btn tl-play" aria-label="Tự chạy" title="Tự chạy qua các mốc">${TL_ICON.play}</button>
       <div class="tl-track">
         <input type="range" class="tl-range" min="0" max="${EVENTS.length - 1}" step="1" value="0" aria-label="Chọn mốc lịch sử">
         <div class="tl-ends"><span>${EVENTS[0].when}</span><span>${EVENTS[EVENTS.length - 1].when}</span></div>
       </div>
-      <button type="button" class="tl-btn tl-next" aria-label="Mốc sau">▶</button>
+      <button type="button" class="tl-btn tl-next" aria-label="Mốc sau" title="Mốc sau">${TL_ICON.next}</button>
     </div>`;
   el.querySelector(".tl-range").oninput = e => { stopHistoryPlay(); showEvent(+e.target.value); };
   el.querySelector(".tl-prev").onclick = () => { stopHistoryPlay(); showEvent(historyIdx - 1); };
@@ -51,8 +58,9 @@ function showEvent(i, fly = true) {
   // Làm nổi bật marker của địa danh, các marker khác mờ đi
   ensureVisible(ev.p);
   PLACES.forEach(p => p.marker.getElement()?.classList.toggle("history-hot", p === ev.p));
+  declutter();                                     // tên của nơi đang xem được ưu tiên hiện
   if (fly) {
-    map.closePopup();
+    closePlace();
     const z = Math.max(6, Math.min(8, map.getZoom()));   // giữ ở mức bản đồ giấy
     // Dời tâm xuống nửa chiều cao thanh dòng thời gian → marker nằm giữa phần bản đồ còn thấy được phía trên thanh
     const barH = document.querySelector(".timeline-bar").offsetHeight + 20;
@@ -62,8 +70,10 @@ function showEvent(i, fly = true) {
 }
 function startHistoryPlay() {
   if (historyIdx >= EVENTS.length - 1) showEvent(0);
-  document.querySelector(".tl-play").textContent = "❚❚";
-  document.querySelector(".tl-play").setAttribute("aria-label", "Dừng");
+  const b = document.querySelector(".tl-play");
+  b.innerHTML = TL_ICON.pause;
+  b.setAttribute("aria-label", "Dừng");
+  b.title = "Dừng tự chạy";
   historyTimer = setInterval(() => {
     if (historyIdx >= EVENTS.length - 1) return stopHistoryPlay();
     showEvent(historyIdx + 1);
@@ -72,7 +82,7 @@ function startHistoryPlay() {
 function stopHistoryPlay() {
   clearInterval(historyTimer); historyTimer = null;
   const b = document.querySelector(".tl-play");
-  if (b) { b.textContent = "▶"; b.setAttribute("aria-label", "Tự chạy"); }
+  if (b) { b.innerHTML = TL_ICON.play; b.setAttribute("aria-label", "Tự chạy"); b.title = "Tự chạy qua các mốc"; }
 }
 function setBarMode(mode) {
   const history = mode === "history";
@@ -81,6 +91,7 @@ function setBarMode(mode) {
   else {
     stopHistoryPlay();
     PLACES.forEach(p => p.marker.getElement()?.classList.remove("history-hot"));
+    declutter();
   }
   document.querySelector(history ? ".tl-range" : ".season-bar .month.active")?.focus({ preventScroll: true });
 }

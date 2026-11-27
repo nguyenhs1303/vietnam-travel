@@ -39,8 +39,7 @@ function scorePlace(p) {
 // Nơi đang bị bộ lọc (loại / tìm kiếm) ẩn đi → bỏ lọc để marker hiện lại trên bản đồ
 function ensureVisible(p) {
   if (map.hasLayer(p.marker)) return;
-  searchEl.value = ""; activeCat = "all";
-  document.querySelectorAll(".chip").forEach((c, i) => c.classList.toggle("active", i === 0));
+  clearFilters();
   render({ refit: false });
 }
 const ROMAN = ["I", "II", "III"];
@@ -50,7 +49,9 @@ function renderBestNow() {
   const ranked = PLACES.map(p => ({ p, r: (p.rating = scorePlace(p)) })).filter(x => x.r)
                        .sort((a, b) => b.r.score - a.r.score);
   if (!ranked.length) {
-    box.innerHTML = `<p class="best-wait">${weatherState === "error" ? "Chưa tải được thời tiết, chưa xếp hạng được." : "⏳ Đang tính…"}</p>`;
+    box.innerHTML = weatherState === "error"
+      ? `<p class="best-wait">Chưa tải được thời tiết, chưa xếp hạng được.</p><button type="button" class="wx-retry">↻ Thử lại</button>`
+      : `<p class="best-wait">⏳ Đang tính…</p>`;
     return;
   }
   ranked.forEach(({ p }, i) => { p.rank = i + 1; });

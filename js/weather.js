@@ -36,7 +36,8 @@ function weatherTips(p, c) {
 const DAY_LABELS = ["Hôm nay", "Ngày mai", "Ngày kia"];
 function weatherHtml(p) {
   if (weatherState === "loading" && !p.weather) return `<div class="wx wx-wait">⏳ Đang tải thời tiết…</div>`;
-  if (!p.weather) return `<div class="wx wx-wait">Không tải được thời tiết. Kiểm tra kết nối mạng.</div>`;
+  if (!p.weather) return `<div class="wx wx-wait">Không tải được thời tiết. Kiểm tra kết nối mạng.
+    <br><button type="button" class="wx-retry">↻ Thử lại</button></div>`;
   const c = p.weather.current, d = p.weather.daily, time = c.time.slice(11, 16);
   const r = p.rating;
   return `${r ? `<div class="score-line"><span class="score-badge">${r.score}</span>
@@ -80,10 +81,26 @@ async function loadWeather() {
     console.warn("Không tải được thời tiết:", err);
     weatherState = "error";                    // giữ dữ liệu cũ (nếu có), chỉ báo lỗi khi chưa có gì
   }
+  refreshWeatherUI();
+}
+// Vẽ lại mọi chỗ có thời tiết: Top 3, nhiệt độ ở danh sách, popup đang mở
+function refreshWeatherUI() {
   renderBestNow();
   PLACES.forEach(p => {
     const mini = p.li?.querySelector(".wx-mini");
     if (mini) mini.innerHTML = weatherMini(p);
-    if (p.marker.isPopupOpen()) p.marker.getPopup().update();
+    refreshPlace(p);
   });
 }
+// Nút "Thử lại" (trong popup và khung Top 3): hiện lại trạng thái đang tải rồi gọi lại API
+function retryWeather() {
+  if (weatherState === "loading") return;
+  weatherState = "loading";
+  refreshWeatherUI();
+  loadWeather();
+}
+// Bắt ở pha capture vì Leaflet chặn click lan ra ngoài popup. Dời sang lượt sau (setTimeout):
+// dựng lại popup ngay giữa lúc click sẽ làm Leaflet tưởng là bấm ra ngoài và đóng popup.
+document.addEventListener("click", e => {
+  if (e.target.closest(".wx-retry")) setTimeout(retryWeather);
+}, true);

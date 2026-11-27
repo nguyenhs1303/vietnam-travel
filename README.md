@@ -39,8 +39,9 @@ js/                   Mã — các file dùng chung biến toàn cục nên PH�
   places.js           Tiện ích chung: mùa đẹp, icon/màu theo loại, ảnh, ghi nguồn
   weather.js          Thời tiết Open-Meteo
   best-now.js         Chấm điểm "Đẹp nhất lúc này"
-  popup.js            Bảng thông tin dạng tab
+  popup.js            Bảng thông tin dạng tab (máy tính: popup · màn hình nhỏ: bảng trượt từ dưới lên)
   markers.js          Marker địa danh
+  declutter.js        Xếp vòng marker chồng nhau, ẩn/hiện tên địa danh để không đè lên nhau
   season.js           Thanh chọn tháng
   timeline.js         Dòng thời gian lịch sử
   list.js             Tìm kiếm, lọc, danh sách, bay tới địa danh
@@ -94,6 +95,7 @@ Thêm vào `HISTORY` cuối `data/data.js` (giữ thứ tự tăng dần theo `y
 | Cách chấm điểm "Đẹp nhất lúc này" | `scorePlace()` trong `js/best-now.js` |
 | Lời khuyên theo thời tiết | `weatherTips()` trong `js/weather.js` |
 | Mức zoom chuyển sang nền OSM | `updatePaperDetail()` trong `js/map.js` |
+| Mức zoom khi bấm một địa danh (mặc định 7, vẫn là bản đồ giấy) | `focusPlace()` trong `js/list.js` |
 | Thời lượng hiệu ứng mở đầu | `playIntro()` trong `js/intro.js` |
 | Tốc độ tự chạy dòng thời gian | `startHistoryPlay()` trong `js/timeline.js` (4500 ms) |
 | Màu ban ngày / ban đêm | biến CSS trong `css/base.css`, `css/theme.css` · `css/night.css` |
