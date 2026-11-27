@@ -1,10 +1,22 @@
 @media (max-width:760px) {
   body { flex-direction:column-reverse; }
-  #sidebar { width:100%; height:42vh; border-right:none; border-top:3px double var(--sepia); overflow-y:auto; }
+  #sidebar { width:100%; height:42vh; height:42dvh; border-right:none; border-top:3px double var(--sepia); overflow-y:auto; }
   #list { flex:none; overflow:visible; }   /* cả thanh bên cuộn chung, mở khung Top 3 không đẩy tràn trang */
-  h1 { font-size:20px; }
+  /* Đầu thanh bên gọn lại để mở trang là thấy ngay địa danh đầu tiên (trước: tiêu đề + nhãn + ô tìm + 3 hàng chip
+     + Top 3 chiếm hết 42% màn hình, danh sách nằm khuất bên dưới) */
+  #sidebar header { padding:10px 16px 8px; }
+  h1 { font-size:18px; margin-bottom:6px; }
+  .search-label { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }  /* vẫn là nhãn cho trình đọc màn hình */
+  #search { font-size:16px; }                /* < 16px thì Safari iOS tự phóng to cả trang khi chạm vào ô */
+  /* Chip lọc: một hàng vuốt ngang (chip cuối lấp ló ở mép phải gợi ý còn nữa) */
+  #filters { flex-wrap:nowrap; overflow-x:auto; margin:8px -16px 0; padding:0 16px 2px; scrollbar-width:none; }
+  #filters::-webkit-scrollbar { display:none; }
+  .chip { flex:0 0 auto; white-space:nowrap; }
+  #best-now { margin-top:8px; }
   .season-bar { max-width:calc(100vw - 20px); margin-bottom:22px !important; padding:5px 8px 4px; }
-  .season-title { font-size:13px; margin-bottom:4px; }
+  .season-title { font-size:13px; margin-bottom:4px; cursor:pointer; }
+  .season-bar.collapsed .bar-head { margin-bottom:0; }
+  .months-toggle { display:flex; }
   .month { width:32px; height:32px; font-size:12px; }
   .month .bar { height:calc(3px + var(--h) * 8px); }
   .popup-open .season-bar, .popup-open .timeline-bar, .popup-open .leaflet-top { display:none !important; }   /* popup đang mở thì nhường chỗ */
@@ -19,6 +31,8 @@
   .cartouche, .compass { display:none; }
   .theme-clock, .theme-note { display:none; }
   .theme-ctl { gap:6px; padding:3px 6px 3px 3px; }
+  .theme-ctl.is-auto { padding:3px; }        /* đang Tự động: chỉ còn công tắc, nút "Tự động" ẩn (gạt tay thì hiện lại) */
+  .theme-ctl.is-auto .theme-side { display:none; }
   .day-night-switch { width:50px; height:26px; }
   .day-night-switch .sw-knob { width:20px; height:20px; font-size:11px; }
   .day-night-switch[aria-checked="true"] .sw-knob { left:calc(100% - 22px); }
@@ -59,6 +73,10 @@
   .leaflet-container a.leaflet-popup-close-button, .sheet-close { width:44px; height:44px; line-height:42px; }
   .leaflet-bar a { width:40px !important; height:40px !important; line-height:40px !important; }
   .month { width:40px; height:44px; }
+  .months-toggle { width:40px; height:40px; }
+  .day-night-switch { width:58px; height:32px; }
+  .day-night-switch .sw-knob { width:26px; height:26px; font-size:13px; }
+  .day-night-switch[aria-checked="true"] .sw-knob { left:calc(100% - 28px); }
   .tl-btn { width:40px; height:40px; }
   .ptab { min-height:44px; }
   .tl-place { padding:6px 0; }

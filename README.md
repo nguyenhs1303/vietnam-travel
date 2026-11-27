@@ -20,7 +20,7 @@ rồi mở `http://localhost:5577`. Cần có mạng để tải font, thời ti
 
 ```bash
 npm install && npx playwright install chromium   # lần đầu
-npm test                                          # 83 bài, ~2–3 phút
+npm test                                          # 95 bài, ~2–3 phút
 ```
 
 Chi tiết, cách viết thêm bài: [`tests/README.md`](tests/README.md). GitHub Actions tự chạy cho mỗi pull request.

@@ -3,25 +3,78 @@ const { test, expect, iPhone13 } = require("./fixtures");
 
 const sheet = app => app.page.locator("#sheet");
 const sheetOpen = app => app.page.evaluate(() => document.getElementById("sheet").classList.contains("open"));
+// Phần trăm diện tích bản đồ bị các khung (leaflet-control) che — lấy mẫu lưới 10px
+const mapCoveredPct = app => app.page.evaluate(() => {
+  const m = document.getElementById("map").getBoundingClientRect();
+  const cs = [...document.querySelectorAll(".leaflet-control")].map(c => c.getBoundingClientRect()).filter(r => r.width && r.height);
+  let hit = 0, n = 0;
+  for (let x = m.left + 5; x < m.right; x += 10) for (let y = m.top + 5; y < m.bottom; y += 10) {
+    n++; if (cs.some(r => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom)) hit++; }
+  return Math.round(hit / n * 100);
+});
 
 test.describe("iPhone 13", () => {
   test.use({ ...iPhone13 });
 
-  test("bớt lớp phủ: không khung tiêu đề, la bàn, đồng hồ, nút +/−; 'Cả năm' luôn thấy", async ({ app }) => {
+  test("bớt lớp phủ: không khung tiêu đề, la bàn, đồng hồ, nút +/−", async ({ app }) => {
     for (const sel of [".cartouche", ".compass", ".theme-clock", ".leaflet-control-zoom"])
       await expect(app.page.locator(sel), sel).toBeHidden();
+    // chữ hiển thị (innerText) là bản rút gọn; textContent vẫn chứa cả phần ẩn trên màn hình nhỏ
+    expect(await app.page.locator(".season-title").innerText()).toMatch(/Tháng 11 · 6 nơi đang đẹp$/);
+  });
+
+  test("[mobile #2] thanh tháng thu gọn một dòng; nút ▾ mở hàng tháng, 'Cả năm' luôn thấy ở đầu hàng", async ({ app }) => {
+    const toggle = app.page.getByRole("button", { name: "Chọn tháng" });
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await expect(app.page.locator(".season-months")).toBeHidden();
+    expect((await app.page.locator(".season-bar").boundingBox()).height).toBeLessThanOrEqual(60);
+    await toggle.tap();
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await expect(app.page.locator(".month.active")).toBeVisible();
     const inRow = await app.page.evaluate(() => { const b = document.querySelector(".month.all").getBoundingClientRect(),
       r = document.querySelector(".season-months").getBoundingClientRect(); return b.left >= r.left - 1 && b.right <= r.right + 1; });
     expect(inRow).toBe(true);
-    // chữ hiển thị (innerText) là bản rút gọn; textContent vẫn chứa cả phần ẩn trên màn hình nhỏ
-    expect(await app.page.locator(".season-title").innerText()).toMatch(/Tháng 11 đi đâu\? · 6 nơi đang đẹp$/);
+    await app.page.tap('.month[data-m="3"]');
+    await expect(app.page.locator(".season-title")).toContainText("Tháng 3");
+    await app.page.tap(".season-title");                              // chạm tiêu đề cũng thu / mở
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
   });
 
   test("vùng chạm ≥ 40px", async ({ app }) => {
+    await app.page.getByRole("button", { name: "Chọn tháng" }).tap();
     const sizes = await app.page.evaluate(() => Object.fromEntries(
-      [".chip", ".theme-auto", ".season-bar .mode-btn", ".month:not(.all)", ".day-night-switch"].map(s => [s, Math.round(document.querySelector(s).getBoundingClientRect().height)])));
-    for (const [sel, h] of Object.entries(sizes)) expect(h, sel).toBeGreaterThanOrEqual(26);
-    for (const sel of [".chip", ".theme-auto", ".season-bar .mode-btn", ".month:not(.all)"]) expect(sizes[sel], sel).toBeGreaterThanOrEqual(40);
+      [".chip", ".theme-auto", ".season-bar .mode-btn", ".month:not(.all)", ".months-toggle", ".day-night-switch"].map(s => [s, Math.round(document.querySelector(s).getBoundingClientRect().height)])));
+    for (const sel of [".chip", ".theme-auto", ".season-bar .mode-btn", ".month:not(.all)", ".months-toggle"]) expect(sizes[sel], sel).toBeGreaterThanOrEqual(40);
+    expect(sizes[".day-night-switch"]).toBeGreaterThanOrEqual(32);
+  });
+
+  test("[mobile #1] mở trang thấy ngay ít nhất một địa danh trong danh sách (không phải cuộn)", async ({ app }) => {
+    const r = await app.page.evaluate(() => ({ top: document.querySelector("#list li").getBoundingClientRect().top, vh: innerHeight }));
+    expect(r.vh - r.top, "phần dòng đầu tiên thấy được (px)").toBeGreaterThanOrEqual(80);
+  });
+
+  test("[mobile #1] chip lọc nằm trên một hàng, vuốt ngang được", async ({ app }) => {
+    const r = await app.page.evaluate(() => { const f = document.getElementById("filters");
+      return { tops: new Set([...f.children].map(c => Math.round(c.getBoundingClientRect().top))).size, scrolls: f.scrollWidth > f.clientWidth,
+               ox: getComputedStyle(f).overflowX }; });
+    expect(r.tops).toBe(1);
+    expect(r.scrolls).toBe(true);
+    expect(r.ox).toBe("auto");
+  });
+
+  test("[mobile #2] đang chỉnh tay (nút 'Tự động' hiện): các khung che ≤ 22% bản đồ", async ({ app }) => {
+    expect(await mapCoveredPct(app)).toBeLessThanOrEqual(22);
+  });
+
+  test("[mobile #4] ô tìm kiếm chữ ≥ 16px (iPhone không tự phóng to trang khi chạm)", async ({ app }) => {
+    expect(parseFloat(await app.page.locator("#search").evaluate(e => getComputedStyle(e).fontSize))).toBeGreaterThanOrEqual(16);
+  });
+
+  test("[mobile #5] chiều cao trang theo khung nhìn động (dvh), không bị thanh trình duyệt che", async ({ app }) => {
+    // (mở qua file:// nên trang không đọc được CSSOM → đọc thẳng file CSS)
+    const css = require("fs").readFileSync(require("path").join(__dirname, "..", "css", "base.css"), "utf8");
+    expect(css).toMatch(/\nbody \{[^}]*height:100dvh/);
+    expect(await app.page.evaluate(() => Math.abs(document.body.getBoundingClientRect().height - innerHeight))).toBeLessThanOrEqual(1);
   });
 
   test("chạm marker → bảng trượt (không phải popup), marker vẫn thấy phía trên, focus vào tiêu đề", async ({ app }) => {
@@ -101,10 +154,37 @@ test.describe("Màn hình thấp mà ngang (phóng to 200%, điện thoại xoay
       });
     });
   }
-  test.describe("320×640", () => {
-    test.use({ viewport: { width: 320, height: 640 } });
+  test.describe("320×568 (iPhone SE đời đầu)", () => {
+    test.use({ viewport: { width: 320, height: 568 }, isMobile: true, hasTouch: true, theme: "auto" });
     test("màn hình hẹp nhất: không cuộn ngang", async ({ app }) => {
       expect(await app.page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
     });
+    test("[mobile #1 #2] màn hình hẹp nhất: thấy một phần địa danh đầu tiên, khung che ≤ 25% bản đồ", async ({ app }) => {
+      const r = await app.page.evaluate(() => innerHeight - document.querySelector("#list li").getBoundingClientRect().top);
+      expect(r).toBeGreaterThanOrEqual(40);
+      expect(await mapCoveredPct(app)).toBeLessThanOrEqual(25);
+    });
+  });
+});
+
+test.describe("iPhone 13 — giao diện tự động theo giờ", () => {
+  test.use({ ...iPhone13, theme: "auto" });
+  test("[mobile #2] mặc định (Tự động): các khung che ≤ 18% bản đồ", async ({ app }) => {
+    expect(await mapCoveredPct(app)).toBeLessThanOrEqual(18);
+  });
+  test("[mobile #2] công tắc ngày/đêm gọn: đang Tự động thì ẩn nút 'Tự động'; gạt tay thì hiện lại để quay về", async ({ app }) => {
+    await expect(app.page.locator(".theme-auto")).toBeHidden();
+    await app.page.tap(".day-night-switch");
+    await expect(app.page.locator(".theme-auto")).toBeVisible();
+    await app.page.tap(".theme-auto");
+    await expect(app.page.locator(".theme-auto")).toBeHidden();
+  });
+});
+
+test.describe("Máy tính", () => {
+  test("thanh tháng luôn mở, không có nút thu gọn", async ({ app }) => {
+    await expect(app.page.locator(".months-toggle")).toBeHidden();
+    await expect(app.page.locator(".season-months")).toBeVisible();
+    await expect(app.page.locator(".theme-auto")).toBeVisible();
   });
 });

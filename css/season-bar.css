@@ -15,3 +15,11 @@
 .month.active .bar { background:#fff; opacity:.9; }
 .month.active.now::after { background:#fff; }
 .month:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+/* Nút ▾ thu / mở hàng tháng: chỉ có trên màn hình nhỏ (css/responsive.css) */
+.months-toggle { display:none; flex:0 0 auto; align-items:center; justify-content:center; width:32px; height:32px; padding:0;
+                 border:1px solid color-mix(in srgb, var(--sepia) 80%, var(--paper)); border-radius:50%; background:transparent;
+                 color:var(--ink); font-size:14px; cursor:pointer; }
+.months-toggle span { transition:transform .2s; }
+.months-toggle[aria-expanded="true"] span { transform:rotate(180deg); }
+.months-toggle:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+.season-bar.collapsed .season-months { display:none; }
