@@ -20,13 +20,13 @@
 .best-info b { font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .best-info small { font-size:12.5px; font-style:italic; color:var(--muted); }
 .best-score { flex:0 0 auto; display:flex; flex-direction:column; align-items:center; line-height:1; }
-.best-score b { font-family:var(--display); font-weight:800; font-size:20px; color:var(--season); }
+.best-score b { font-family:var(--display); font-weight:800; font-size:20px; color:var(--season-ink); }
 .best-score small { font-size:10.5px; color:var(--muted); margin-top:2px; white-space:nowrap; }
 .best-note { margin-top:4px; font-size:11.5px; font-style:italic; color:var(--muted); }
 /* Điểm trong tab Thời tiết */
 .score-line { display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:14px; line-height:1.25; }
 .score-line small { display:block; font-size:12px; font-style:italic; color:var(--muted); }
 .score-badge { flex:0 0 auto; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-               font-family:var(--display); font-weight:800; font-size:16px; color:#fff; background:var(--season);
-               box-shadow:0 0 0 2px var(--paper), 0 0 0 3px var(--season); }
+               font-family:var(--display); font-weight:800; font-size:16px; color:#fff; background:var(--season-ink);
+               box-shadow:0 0 0 2px var(--paper), 0 0 0 3px var(--season-ink); }
 .night .score-badge { color:#1b1200; }

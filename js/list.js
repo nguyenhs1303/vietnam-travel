@@ -7,18 +7,63 @@ const searchEl = document.getElementById("search");
 let activeCat = "all";
 
 // Bộ lọc
+function setActiveCat(key) {
+  activeCat = key;
+  document.querySelectorAll(".chip").forEach(c => {
+    const on = c.dataset.cat === key;
+    c.classList.toggle("active", on);
+    c.setAttribute("aria-pressed", on);
+  });
+}
 function addChip(key, label) {
   const b = document.createElement("button");
-  b.className = "chip" + (key === activeCat ? " active" : "");
+  b.type = "button";
+  b.className = "chip";
+  b.dataset.cat = key;
   if (key !== "all") b.style.cssText = catVars(key);   // chip mang màu của loại
   b.textContent = label;
-  b.onclick = () => { activeCat = key; document.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c === b)); render(); };
+  b.onclick = () => { setActiveCat(key); render(); };
   filtersEl.appendChild(b);
 }
+filtersEl.setAttribute("role", "group");
+filtersEl.setAttribute("aria-label", "Lọc theo loại");
 addChip("all", "Tất cả");
 Object.entries(CATEGORIES).forEach(([k, v]) => addChip(k, `${v.icon} ${v.label}`));
+setActiveCat(activeCat);
+
+// Bỏ hết tìm kiếm + lọc loại (dùng cho nút "Xoá bộ lọc" và khi cần hiện lại một nơi đang bị ẩn)
+function clearFilters() {
+  searchEl.value = "";
+  setActiveCat("all");
+}
+
+// Thông báo khi không có kết quả (role="status" để trình đọc màn hình đọc lên)
+const emptyEl = document.createElement("div");
+emptyEl.id = "list-empty";
+emptyEl.setAttribute("role", "status");
+listEl.before(emptyEl);
 
 const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").toLowerCase();
+
+function renderEmpty(show) {
+  emptyEl.replaceChildren();
+  emptyEl.hidden = !show;
+  if (!show) return;
+  const raw = searchEl.value.trim();
+  const msg = document.createElement("p");
+  msg.append("Không tìm thấy nơi nào");
+  if (raw) { msg.append(" khớp “"); const b = document.createElement("b"); b.textContent = raw; msg.append(b, "”"); }
+  if (activeCat !== "all") msg.append(` trong mục ${CATEGORIES[activeCat].label}`);
+  msg.append(".");
+  const hint = document.createElement("small");
+  hint.textContent = "Thử gõ tên tỉnh, tên địa danh hoặc món ăn, vd: Huế, phở, cao lầu.";
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "empty-reset";
+  btn.textContent = "Xoá tìm kiếm & bộ lọc";
+  btn.onclick = () => { clearFilters(); render(); searchEl.focus(); };
+  emptyEl.append(msg, hint, btn);
+}
 
 function render({ refit = true } = {}) {
   const q = norm(searchEl.value.trim());
@@ -29,6 +74,7 @@ function render({ refit = true } = {}) {
   shown.sort((a, b) => inSeason(b) - inSeason(a));
 
   listEl.innerHTML = "";
+  renderEmpty(!shown.length);
   PLACES.forEach(p => { map.removeLayer(p.marker); p.li = null; });
 
   shown.forEach(p => {
@@ -40,13 +86,14 @@ function render({ refit = true } = {}) {
     el.classList.toggle("off-season", !inSeason(p));
     el.classList.toggle("history-hot", map.getContainer().classList.contains("history-mode") && EVENTS[historyIdx]?.p === p);
 
+    // Mỗi dòng là một <button> bên trong <li> → Tab tới được, Enter / Space để mở, vẫn giữ ngữ nghĩa danh sách
     const li = document.createElement("li");
     li.classList.toggle("off", !inSeason(p));
     li.style.cssText = catVars(p.cat);
-    li.innerHTML = `${thumbHtml(p, "ico")}<div class="info"><b>${p.name}</b>` +
-      `<small>${p.region} ${catBadge(p.cat)}</small>${hot ? `<span class="tag">✨ Đang mùa đẹp</span>` : ""}</div>` +
-      `<span class="wx-mini" title="Thời tiết hiện tại">${weatherMini(p)}</span>`;
-    li.onclick = () => focusPlace(p, li);
+    li.innerHTML = `<button type="button" class="row">${thumbHtml(p, "ico")}<span class="info"><b>${p.name}</b>` +
+      `<small>${p.region} ${catBadge(p.cat)}</small>${hot ? `<span class="tag">✨ Đang mùa đẹp</span>` : ""}</span>` +
+      `<span class="wx-mini" title="Thời tiết hiện tại">${weatherMini(p)}</span></button>`;
+    li.querySelector(".row").onclick = () => focusPlace(p, li);
     p.li = li;
     listEl.appendChild(li);
   });

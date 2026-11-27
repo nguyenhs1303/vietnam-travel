@@ -4,7 +4,7 @@
 // story: sự tích / giai thoại ngắn · foods: [[tên món, mô tả ngắn], …]
 // color: màu chủ đạo của loại (viền, chữ) · bg: màu nền nhạt cho ô icon
 const CATEGORIES = {
-  nature:   { label: "Thiên nhiên",      icon: "⛰️", color: "#2e7d4f", bg: "#e2f3e8" },
+  nature:   { label: "Thiên nhiên",      icon: "⛰️", color: "#2a7549", bg: "#e2f3e8" },
   heritage: { label: "Di sản & văn hóa", icon: "🏯", color: "#b3261e", bg: "#fbe6e2" },
   beach:    { label: "Biển đảo",         icon: "🏖️", color: "#0b6fa4", bg: "#def0fa" },
   city:     { label: "Đô thị",           icon: "🏙️", color: "#6a43b5", bg: "#eee7fa" },

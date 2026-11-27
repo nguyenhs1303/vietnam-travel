@@ -2,7 +2,7 @@
 .season-bar { background:var(--paper); border:1px solid var(--ink); outline:2px solid var(--paper); border-radius:3px;
               padding:7px 10px 5px; box-shadow:0 4px 14px rgba(60,35,10,.3); max-width:calc(100vw - 500px); font-family:var(--serif); }
 .season-title { font-size:15px; margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.season-title b { color:var(--season); }
+.season-title b { color:var(--season-ink); }
 .season-months { display:flex; gap:4px; align-items:flex-end; overflow-x:auto; padding-bottom:2px; }
 .month { position:relative; flex:0 0 auto; width:38px; height:40px; border:1px solid var(--line); background:#fffaf0; border-radius:3px;
          cursor:pointer; font:inherit; font-size:14px; color:var(--ink); display:flex; flex-direction:column;
@@ -11,7 +11,7 @@
 .month.all { width:auto; padding:0 10px; justify-content:center; font-style:italic; }
 .month.now::after { content:""; position:absolute; top:3px; right:3px; width:6px; height:6px; border-radius:50%; background:var(--accent); }
 .month:hover { border-color:var(--season); }
-.month.active { background:var(--season); border-color:var(--season); color:#fff; }
+.month.active { background:var(--season-ink); border-color:var(--season-ink); color:#fff; }
 .month.active .bar { background:#fff; opacity:.9; }
 .month.active.now::after { background:#fff; }
 .month:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }

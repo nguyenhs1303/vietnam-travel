@@ -23,7 +23,10 @@ function panelHeight() {
 function popupHtml(p, idx) {
   const tabs = POPUP_TABS.filter(t => !t.when || t.when(p));
   const h = panelHeight();
-  const active = tabs.some(t => t.id === p.activeTab) ? p.activeTab : "wx";
+  // Tab mặc định: Thời tiết; tải thời tiết bị lỗi (không có số liệu) thì mở Giới thiệu, tránh một ô gần như trống
+  const wxOk = p.weather || weatherState === "loading";
+  const active = tabs.some(t => t.id === p.activeTab) ? p.activeTab : (wxOk ? "wx" : "info");
+  p.activeTab = active;                           // giữ nguyên tab khi popup được dựng lại (vd. thời tiết vừa tải xong)
   return `<div class="popup" data-i="${idx}">
     ${p.photo ? `<figure class="hero"><img src="${p.photo}" alt="${p.name}">${creditHtml(p)}</figure>` : ""}
     <div class="popup-head">
@@ -65,5 +68,5 @@ map.getContainer().addEventListener("keydown", e => {
   const next = all[(all.indexOf(btn) + (e.key === "ArrowRight" ? 1 : all.length - 1)) % all.length];
   selectPopupTab(next);
 }, true);
-// Đóng popup thì lần sau mở lại về tab Thời tiết
-map.on("popupclose", () => PLACES.forEach(p => { p.activeTab = "wx"; }));
+// Đóng popup thì lần sau mở lại về tab mặc định
+map.on("popupclose", () => PLACES.forEach(p => { p.activeTab = null; }));

@@ -45,8 +45,8 @@ ul.foods { list-style:none; padding:0; margin:0; display:grid; gap:5px; }
 
 /* Lịch 12 tháng trong popup */
 .cal { display:grid; grid-template-columns:repeat(12,1fr); gap:2px; margin-top:6px; }
-.cal span { text-align:center; font-size:11px; padding:1px 0; border-radius:2px; background:#e9dcbd; color:#a08a67; }
-.cal span.on { background:var(--season); color:#fff; font-weight:600; }
+.cal span { text-align:center; font-size:11px; padding:1px 0; border-radius:2px; background:#e9dcbd; color:var(--muted); }
+.cal span.on { background:var(--season-ink); color:#fff; font-weight:600; }
 .cal span.now { outline:1.5px solid var(--accent); outline-offset:-1.5px; }
 
 /* ===== Thời tiết (khung giấy xanh nhạt) ===== */
@@ -57,13 +57,13 @@ ul.foods { list-style:none; padding:0; margin:0; display:grid; gap:5px; }
 .wx-temp { font-family:var(--display); font-size:30px; font-weight:800; color:#34505c; line-height:1; }
 .wx-desc { display:flex; flex-direction:column; font-size:14px; line-height:1.25; }
 .wx-desc b { color:#34505c; }
-.wx-desc small { color:#6a6a55; font-size:12px; }
+.wx-desc small { color:#66644c; font-size:12px; }
 .wx-tips { list-style:none; padding:0; margin:5px 0 0; font-size:14px; color:var(--ink); }
 .wx-tips li { margin-top:1px; }
 .wx-days { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; margin-top:6px; }
 .wx-days > div { display:flex; flex-direction:column; align-items:center; background:var(--paper); border:1px solid #d8d2b3;
                  border-radius:3px; padding:2px 0; line-height:1.2; }
-.wx-days small { font-size:11px; color:#6a6a55; }
+.wx-days small { font-size:11px; color:#66644c; }
 .wx-days span { font-size:16px; }
 .wx-days b { font-size:14px; color:#34505c; }
-.wx-src { margin-top:4px; font-size:11px; font-style:italic; color:#8a8668; text-align:right; }
+.wx-src { margin-top:4px; font-size:11px; font-style:italic; color:#66644c; text-align:right; }

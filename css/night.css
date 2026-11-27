@@ -1,7 +1,7 @@
 /* ===== BẢN ĐỒ ĐÊM: mực xanh đêm, chữ ánh vàng như in nhũ ===== */
 body.night {
   --ink:#e6cf96; --accent:#e58b6d; --sepia:#b89a5e; --muted:#a59d80; --paper:#1b2d47; --sea:#12223a; --line:#34496a;
-  --season:#e3a43c;
+  --season:#e3a43c; --season-ink:#e3a43c;
   --land:#253f63; --land-hi:#2e4b74; --nb-fill:url(#hatch-night); --nb-stroke:#3d577d; --ripple:#5b7ba6;
   --river:#7fb6e2; --grid:#c9a75f;
   background:#0b1524;
@@ -28,13 +28,13 @@ body.night {
 .night .scale-box { background:rgba(27,45,71,.9); }
 .night .leaflet-container a.leaflet-popup-close-button { background:rgba(27,45,71,.92); }
 .night .popup .best { color:#a9c08a; }
-.night .cal span { background:#2a4166; color:#7f8fa8; }
+.night .cal span { background:#2a4166; color:#a3b0c4; }
 .night .cal span.on { color:#1b1200; }
 .night .wx { background:#203654; border-color:#34507a; }
 .night .wx-temp, .night .wx-desc b, .night .wx-days b { color:#a9d2f0; }
 .night .wx-desc small, .night .wx-days small { color:#a59d80; }
 .night .wx-days > div { border-color:#34507a; }
-.night .wx-src { color:#8f98a8; }
-.night .month.active { background:var(--season); color:#1b1200; }
+.night .wx-src { color:#a3abb9; }
+.night .month.active { background:var(--season-ink); color:#1b1200; }
 .night .pin.has-photo img { filter:sepia(.5) saturate(.8) brightness(.9); }
 .night .theme-ctl { box-shadow:0 0 10px rgba(230,207,150,.25); }
