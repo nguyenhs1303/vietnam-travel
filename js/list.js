@@ -48,7 +48,9 @@ const emptyMessage = () => {
          (activeCat !== "all" ? ` trong mục ${CATEGORIES[activeCat].label}` : "") + ".";
 };
 
-const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").toLowerCase();
+// Bỏ dấu để gõ không dấu vẫn tìm được. Chuyển chữ thường TRƯỚC rồi mới đổi đ → d (trước đây "Đ" hoa không được đổi
+// → gõ "da lat", "dong van" không ra Đà Lạt, Đồng Văn)
+const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d");
 
 function renderEmpty(show) {
   emptyEl.hidden = !show;
@@ -144,7 +146,9 @@ function focusPlace(p, li, fly = true) {
   if (map.getZoom() >= 7 && map.getBounds().pad(-0.15).contains(ll)) return openPlace(p);
   // Mở popup sau khi bay xong, để bản đồ tự dịch cho popup nằm gọn trong khung
   closePlace();
+  map.flyTo(ll, zoom, { duration: 1.2 });
+  // Đăng ký SAU flyTo: flyTo dừng chuyển động đang dở (hiệu ứng zoom lúc mở trang, quán tính khi vừa kéo bản đồ) và việc
+  // dừng đó phát "moveend" ngay — đăng ký trước thì popup mở luôn lúc vừa cất cánh, rồi bản đồ mới bay đi.
   pendingOpen = () => { pendingOpen = null; openPlace(p); };
   map.once("moveend", pendingOpen);
-  map.flyTo(ll, zoom, { duration: 1.2 });
 }

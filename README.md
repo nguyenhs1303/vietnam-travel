@@ -16,6 +16,15 @@ rồi mở `http://localhost:5577`. Cần có mạng để tải font, thời ti
 
 > Sửa file xong mà không thấy thay đổi: bấm **Ctrl + F5** để trình duyệt bỏ bản lưu tạm.
 
+## Kiểm thử
+
+```bash
+npm install && npx playwright install chromium   # lần đầu
+npm test                                          # 83 bài, ~2–3 phút
+```
+
+Chi tiết, cách viết thêm bài: [`tests/README.md`](tests/README.md). GitHub Actions tự chạy cho mỗi pull request.
+
 ## Cấu trúc thư mục
 
 ```
@@ -54,6 +63,8 @@ data/
   vietnam-border.js   Ranh giới quốc gia gồm lãnh hải (OpenStreetMap)
 images/places/        Ảnh địa danh (480px)
 vendor/leaflet/       Thư viện bản đồ Leaflet 1.9.4
+tests/                Bộ kiểm thử Playwright (xem tests/README.md) · playwright.config.js · package.json
+.github/workflows/    Chạy kiểm thử trên GitHub Actions
 ```
 
 ## Thêm một địa danh
