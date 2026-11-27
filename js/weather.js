@@ -48,7 +48,7 @@ function weatherHtml(p) {
       <span class="wx-ico" aria-hidden="true">${wxIcon(c.weather_code, c.is_day)}</span>
       <span class="wx-temp">${Math.round(c.temperature_2m)}°</span>
       <span class="wx-desc"><b>${wxText(c.weather_code)}</b>
-        <small>Cảm giác ${Math.round(c.apparent_temperature)}° · Ẩm ${c.relative_humidity_2m}% · Gió ${Math.round(c.wind_speed_10m)} km/h</small></span>
+        <small>Cảm giác\u00a0${Math.round(c.apparent_temperature)}° · Ẩm\u00a0${c.relative_humidity_2m}% · Gió\u00a0${Math.round(c.wind_speed_10m)}\u00a0km/h</small></span>
     </div>
     <ul class="wx-tips">${weatherTips(p, c).map(t => `<li>${t.replace(/^(\S+) /, (_, e) => deco(e) + " ")}</li>`).join("")}</ul>
     <div class="wx-days">${d.time.map((_, i) => `

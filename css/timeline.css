@@ -18,8 +18,8 @@
 .tl-year { flex:0 0 auto; min-width:96px; font-family:var(--display); font-weight:800; font-size:24px; line-height:1.05;
            color:var(--accent); text-align:center; padding-top:2px; }
 .tl-body { min-width:0; flex:1; }
-.tl-head { display:block; font-family:var(--display); font-size:17px; line-height:1.2; }
-.tl-place { font:inherit; font-size:13px; font-style:italic; color:var(--sepia); background:none; border:none; padding:0; cursor:pointer;
+.tl-head { display:block; font-weight:600; font-size:18px; line-height:1.2; }   /* EB Garamond: Playfair chỉ dùng ≥ 18px */
+.tl-place { font:inherit; font-size:14px; font-style:italic; color:var(--sepia); background:none; border:none; padding:0; cursor:pointer;
             text-decoration:underline dotted; text-underline-offset:3px; }
 .tl-place:hover { color:var(--accent); }
 .tl-more { display:none; }   /* chỉ có trên màn hình nhỏ (css/responsive.css) */
@@ -33,7 +33,7 @@
 .tl-play:hover:not(:disabled) { background:var(--accent); filter:brightness(1.1); }
 .tl-track { flex:1; min-width:0; }
 .tl-range { width:100%; accent-color:var(--accent); cursor:pointer; margin:0; }
-.tl-ends { display:flex; justify-content:space-between; font-size:11px; font-style:italic; color:var(--muted); }
+.tl-ends { display:flex; justify-content:space-between; font-size:12px; font-style:italic; color:var(--muted); }
 /* Marker: nơi của mốc đang xem sáng đỏ son, các nơi khác mờ đi */
 .history-mode .leaflet-marker-icon:not(.history-hot) .pin { opacity:.3; filter:grayscale(1); }
 .history-mode .leaflet-marker-icon:not(.history-hot) .pin::before { animation:none; opacity:0; }

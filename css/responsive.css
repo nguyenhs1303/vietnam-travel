@@ -17,12 +17,13 @@
   .season-title { font-size:13px; margin-bottom:4px; cursor:pointer; }
   .season-bar.collapsed .bar-head { margin-bottom:0; }
   .months-toggle { display:flex; }
-  .month { width:32px; height:32px; font-size:12px; }
+  .month { width:32px; height:32px; font-size:13px; }
+  .month.all { font-size:14px; }
   .month .bar { height:calc(3px + var(--h) * 8px); }
   .popup-open .season-bar, .popup-open .timeline-bar, .popup-open .leaflet-top { display:none !important; }   /* popup đang mở thì nhường chỗ */
   .timeline-bar { width:calc(100vw - 20px); padding:6px 9px 5px; }
   .tl-year { min-width:62px; font-size:19px; }
-  .tl-head { font-size:15px; }
+  .tl-head { font-size:16px; }
   .tl-title { font-size:13px; }
   /* Dòng thời gian gọn (trước che 48–63% bản đồ): tiêu đề "Dòng thời gian…" chỉ còn cho trình đọc màn hình, nút "Theo mùa"
      thành nút tròn ở góc, đoạn mô tả ẩn sau "Đọc thêm", bỏ nhãn hai đầu thanh kéo */
@@ -33,14 +34,14 @@
   .tl-body { padding-right:46px; }
   .tl-text { display:none; font-size:13.5px; height:auto; max-height:5.5em; }
   .timeline-bar.show-text .tl-text { display:block; }
-  .tl-more { display:inline-flex; align-items:center; margin-left:8px; padding:0 2px; font:inherit; font-size:13px; font-style:italic;
+  .tl-more { display:inline-flex; align-items:center; margin-left:8px; padding:0 2px; font:inherit; font-size:14px; font-style:italic;
              color:var(--sepia); background:none; border:none; cursor:pointer; text-decoration:underline dotted; text-underline-offset:3px; }
   .tl-more[aria-expanded="true"] span { display:inline-block; transform:rotate(180deg); }
   .tl-more:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
   .tl-ends { display:none; }
   .tl-controls { margin-top:2px; }
   .popup .hero img { height:110px; }
-  .ptab { font-size:11.5px; }
+  .ptab { font-size:13px; }
   /* Bản đồ chỉ còn khoảng nửa màn hình → bớt lớp phủ: bỏ khung tiêu đề (thanh bên đã có), la bàn, đồng hồ */
   .cartouche, .compass { display:none; }
   .theme-clock, .theme-note { display:none; }
@@ -60,7 +61,7 @@
   .hide-sm { display:none; }
   .show-sm { display:inline; }
   .sea-big { font-size:18px; letter-spacing:2px; }
-  .place-name, .far .place-name { font-size:13px; }
+  .place-name, .far .place-name { font-size:14px; }
 }
 
 /* Chữ chỉ hiện ở màn hình nhỏ (bản rút gọn của câu dài) */
@@ -102,7 +103,7 @@
 @media (min-width:761px) and (max-width:1023px) {
   #sidebar { width:300px; }
   .cartouche { padding:4px 12px 3px; margin:10px 10px 0 0 !important; outline-width:2px; }
-  .cartouche .cart-title { font-size:17px; }
+  .cartouche .cart-title { font-size:18px; }
   .cartouche small:last-child, .cartouche .orn { display:none; }
   .clock-date, .theme-note { display:none; }
   .compass { display:none; }                 /* trang trí; nhường chỗ cho thanh tháng (bản đồ chỉ rộng ~470px) */
@@ -117,7 +118,7 @@
   .timeline-bar .bar-head { top:auto; bottom:5px; }
   .tl-body { padding-right:0; }
   .tl-controls { padding-right:46px; }
-  .tl-year { min-width:50px; font-size:16px; }
-  .tl-head { font-size:14px; }
+  .tl-year { min-width:52px; font-size:18px; }
+  .tl-head { font-size:15px; }
   .tl-more { margin-left:6px; }
 }

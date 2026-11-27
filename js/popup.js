@@ -29,12 +29,12 @@ function popupPadding(p) {
   });
   return pad;
 }
-// Chiều cao phần nội dung tab: vừa phần bản đồ còn trống giữa các khung (màn hình thấp thì thấp lại, 110–200px)
+// Chiều cao phần nội dung tab: vừa phần bản đồ còn trống giữa các khung (màn hình thấp thì thấp lại, 110–230px)
 function panelHeight(p) {
   const mapH = map.getContainer().clientHeight;
   const hero = matchMedia("(max-width:760px)").matches ? 110 : 150;
   const pad = p?.pad || { top: 10, bottom: 140 };
-  return Math.max(110, Math.min(200, mapH - pad.top - pad.bottom - hero - 135));   // 135 ≈ tiêu đề + hàng tab + lề + mũi nhọn
+  return Math.max(110, Math.min(230, mapH - pad.top - pad.bottom - hero - 135));   // 230: đủ hàng dự báo 3 ngày ở cỡ chữ 13px   // 135 ≈ tiêu đề + hàng tab + lề + mũi nhọn
 }
 function popupHtml(p, idx, h = panelHeight(p)) {
   const tabs = POPUP_TABS.filter(t => !t.when || t.when(p));
