@@ -21,14 +21,14 @@ function addChip(key, label) {
   b.className = "chip";
   b.dataset.cat = key;
   if (key !== "all") b.style.cssText = catVars(key);   // chip mang màu của loại
-  b.textContent = label;
-  b.onclick = () => { setActiveCat(key); render(); };
+  b.innerHTML = label;
+  b.onclick = () => { setActiveCat(key); render(); announceResults(); };
   filtersEl.appendChild(b);
 }
 filtersEl.setAttribute("role", "group");
 filtersEl.setAttribute("aria-label", "Lọc theo loại");
 addChip("all", "Tất cả");
-Object.entries(CATEGORIES).forEach(([k, v]) => addChip(k, `${v.icon} ${v.label}`));
+Object.entries(CATEGORIES).forEach(([k, v]) => addChip(k, `${deco(v.icon)} ${v.label}`));
 setActiveCat(activeCat);
 
 // Bỏ hết tìm kiếm + lọc loại (dùng cho nút "Xoá bộ lọc" và khi cần hiện lại một nơi đang bị ẩn)
@@ -61,8 +61,17 @@ function renderEmpty(show) {
   btn.type = "button";
   btn.className = "empty-reset";
   btn.textContent = "Xoá tìm kiếm & bộ lọc";
-  btn.onclick = () => { clearFilters(); render(); searchEl.focus(); };
+  btn.onclick = () => { clearFilters(); render(); searchEl.focus(); announceResults(); };
   emptyEl.append(msg, hint, btn);
+}
+
+// Đọc số kết quả sau khi tìm / lọc (không có kết quả thì khung "Không tìm thấy" đã tự đọc, role="status")
+function announceResults(delay = 0) {
+  const n = listEl.children.length;
+  if (!n) return;
+  const raw = searchEl.value.trim();
+  announce(`Hiện ${n} trên ${PLACES.length} nơi` + (raw ? ` khớp “${raw}”` : "") +
+           (activeCat !== "all" ? ` trong mục ${CATEGORIES[activeCat].label}` : ""), delay);
 }
 
 function render({ refit = true } = {}) {
@@ -85,13 +94,15 @@ function render({ refit = true } = {}) {
     el.classList.toggle("in-season", hot);
     el.classList.toggle("off-season", !inSeason(p));
     el.classList.toggle("history-hot", map.getContainer().classList.contains("history-mode") && EVENTS[historyIdx]?.p === p);
+    // Tên marker cho trình đọc màn hình: kèm trạng thái mùa (trên bản đồ chỉ thể hiện bằng vòng sáng)
+    el.setAttribute("aria-label", p.name + (hot ? ", đang mùa đẹp" : !inSeason(p) ? ", ngoài mùa đẹp" : ""));
 
     // Mỗi dòng là một <button> bên trong <li> → Tab tới được, Enter / Space để mở, vẫn giữ ngữ nghĩa danh sách
     const li = document.createElement("li");
     li.classList.toggle("off", !inSeason(p));
     li.style.cssText = catVars(p.cat);
     li.innerHTML = `<button type="button" class="row">${thumbHtml(p, "ico")}<span class="info"><b>${p.name}</b>` +
-      `<small>${p.region} ${catBadge(p.cat)}</small>${hot ? `<span class="tag">✨ Đang mùa đẹp</span>` : ""}</span>` +
+      `<small>${p.region} ${catBadge(p.cat)}</small>${hot ? `<span class="tag">${deco("✨")} Đang mùa đẹp</span>` : ""}</span>` +
       `<span class="wx-mini" title="Thời tiết hiện tại">${weatherMini(p)}</span></button>`;
     li.querySelector(".row").onclick = () => focusPlace(p, li);
     p.li = li;

@@ -50,16 +50,16 @@ function renderBestNow() {
                        .sort((a, b) => b.r.score - a.r.score);
   if (!ranked.length) {
     box.innerHTML = weatherState === "error"
-      ? `<p class="best-wait">Chưa tải được thời tiết, chưa xếp hạng được.</p><button type="button" class="wx-retry">↻ Thử lại</button>`
-      : `<p class="best-wait">⏳ Đang tính…</p>`;
+      ? `<p class="best-wait">Chưa tải được thời tiết, chưa xếp hạng được.</p><button type="button" class="wx-retry">${deco("↻")} Thử lại</button>`
+      : `<p class="best-wait">${deco("⏳")} Đang tính…</p>`;
     return;
   }
   ranked.forEach(({ p }, i) => { p.rank = i + 1; });
   box.innerHTML = `<ol class="best-list">${ranked.slice(0, 3).map(({ p, r }, i) => `
     <li><button type="button" data-i="${PLACES.indexOf(p)}" style="${catVars(p.cat)}">
-      <span class="best-rank">${ROMAN[i]}</span>
-      <span class="best-info"><b>${placeIcon(p)} ${p.name}</b><small>${r.reasons.slice(0, 3).join(" · ")}</small></span>
-      <span class="best-score"><b>${r.score}</b><small>${r.verdict}</small></span>
+      <span class="best-rank" aria-hidden="true">${ROMAN[i]}</span>${srOnly(`Hạng ${i + 1}:`)}
+      <span class="best-info"><b>${deco(placeIcon(p))} ${p.name}</b><small>${r.reasons.slice(0, 3).join(" · ")}</small></span>
+      <span class="best-score"><b>${r.score}${srOnly(" điểm,")}</b><small>${r.verdict}</small></span>
     </button></li>`).join("")}</ol>
     <p class="best-note">Chấm theo mùa đẹp tháng ${CURRENT_MONTH} và dự báo 3 ngày tới · bấm để xem</p>`;
   box.querySelectorAll("button").forEach(btn => btn.onclick = () => {

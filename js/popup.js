@@ -10,7 +10,7 @@ const foodsHtml = p => p.foods?.length
 const POPUP_TABS = [
   { id: "wx",    icon: "🌤️", label: "Thời tiết",  html: p => weatherHtml(p) },
   { id: "info",  icon: "📖", label: "Giới thiệu", html: p => `<p class="desc">${p.desc}</p>
-      <div class="best">🗓️ Thời điểm đẹp: ${p.best}</div>${calendarHtml(p)}` },
+      <div class="best">${deco("🗓️")} Thời điểm đẹp: ${p.best}</div><div aria-hidden="true">${calendarHtml(p)}</div>` },
   { id: "story", icon: "📜", label: "Chuyện kể",  html: p => storyHtml(p), when: p => p.story },
   { id: "food",  icon: "🍜", label: "Món ăn",     html: p => foodsHtml(p), when: p => p.foods?.length },
 ];
@@ -45,15 +45,15 @@ function popupHtml(p, idx, h = panelHeight(p)) {
   return `<div class="popup" data-i="${idx}">
     ${p.photo ? `<figure class="hero"><img src="${p.photo}" alt="${p.name}">${creditHtml(p)}</figure>` : ""}
     <div class="popup-head">
-      <h3>${placeIcon(p)} ${p.name}</h3>
-      <div class="region">📍 ${p.region} ${catBadge(p.cat)}</div>
+      <h2 class="place-title" tabindex="-1">${deco(placeIcon(p))} ${p.name}</h2>
+      <div class="region">${deco("📍")} ${p.region} ${catBadge(p.cat)}</div>
     </div>
     <div class="ptabs" role="tablist" aria-label="Thông tin ${p.name}">${tabs.map(t => `
       <button type="button" role="tab" class="ptab" data-tab="${t.id}" id="t-${idx}-${t.id}"
         aria-controls="pn-${idx}-${t.id}" aria-selected="${t.id === active}" tabindex="${t.id === active ? 0 : -1}">
         <span aria-hidden="true">${t.icon}</span>${t.label}</button>`).join("")}
     </div>
-    ${tabs.map(t => `<div class="ppanel" style="height:${h}px" role="tabpanel" id="pn-${idx}-${t.id}" aria-labelledby="t-${idx}-${t.id}"
+    ${tabs.map(t => `<div class="ppanel" style="height:${h}px" role="tabpanel" tabindex="0" id="pn-${idx}-${t.id}" aria-labelledby="t-${idx}-${t.id}"
         ${t.id === active ? "" : "hidden"}>${t.html(p)}</div>`).join("")}
   </div>`;
 }
@@ -114,7 +114,7 @@ function openSheet(p) {
   sheet.getBoundingClientRect();                  // để hiệu ứng trượt lên chạy từ vị trí ẩn
   sheet.classList.add("open");
   map.getContainer().classList.add("popup-open");
-  sheet.focus({ preventScroll: true });
+  focusPlaceTitle(sheet);
   // Dời bản đồ cho marker nằm giữa phần bản đồ còn thấy được phía trên bảng trượt
   const mapRect = map.getContainer().getBoundingClientRect();
   const visibleH = Math.min(mapRect.height, innerHeight - sheet.offsetHeight - mapRect.top);
@@ -129,24 +129,59 @@ function closeSheet() {
   sheet.classList.remove("open");
   sheetHideTimer = setTimeout(() => { sheet.hidden = true; }, 260);
   map.getContainer().classList.remove("popup-open");
-  if (sheet.contains(document.activeElement)) p.li?.querySelector(".row")?.focus({ preventScroll: true });
+  if (sheet.contains(document.activeElement)) {
+    if (placeOpener?.isConnected) returnFocus(); else p.li?.querySelector(".row")?.focus({ preventScroll: true });
+  }
+}
+// Bàn phím / trình đọc màn hình: mở thì đưa focus vào tiêu đề địa danh (nếu không người dùng không biết popup đã mở —
+// popup nằm cuối trang, sau 16 marker); đóng thì trả focus về đúng nút đã bấm (dòng danh sách, marker, Top 3…).
+let placeOpener = null, openingPlace = false;
+const focusPlaceTitle = root => root?.querySelector(".place-title")?.focus({ preventScroll: true });
+function returnFocus() {
+  const el = placeOpener;
+  placeOpener = null;
+  if (el?.isConnected) el.focus({ preventScroll: true });
 }
 function openPlace(p) {
+  const a = document.activeElement;
+  if (a && a !== document.body && !a.closest(".leaflet-popup, #sheet")) placeOpener = a;
   if (isSmallScreen()) { map.closePopup(); openSheet(p); }
   else {
     closeSheet();
     p.pad = popupPadding(p);
     p.popup.options.autoPanPaddingTopLeft = [10, p.pad.top];
     p.popup.options.autoPanPaddingBottomRight = [10, p.pad.bottom];
+    openingPlace = true;                          // popup cũ đóng ngay trong openOn → không trả focus lúc đó
     p.popup.setLatLng([p.lat, p.lng]).openOn(map);
+    openingPlace = false;
+    focusPlaceTitle(p.popup.getElement());
   }
 }
 function closePlace() { map.closePopup(); closeSheet(); }
+map.on("popupopen", e => {
+  // Nút đóng của Leaflet mặc định ghi tiếng Anh "Close popup"; vùng bấm 24px → to hơn trong CSS
+  const x = e.popup.getElement().querySelector(".leaflet-popup-close-button");
+  if (x) { x.setAttribute("aria-label", "Đóng"); x.title = "Đóng"; }
+});
+// Popup đóng (nút ✕, Esc, bấm ra bản đồ…): focus đang nằm trong popup (Leaflet còn giữ popup ~0,2 giây để mờ dần rồi mới gỡ)
+// hoặc đã rơi về <body> → trả về nút đã mở. Focus đã ở chỗ khác (người dùng bấm vào bản đồ, marker khác…) thì để yên.
+map.on("popupclose", () => {
+  if (openingPlace) return;
+  const a = document.activeElement;
+  if (!a || a === document.body || a.closest(".leaflet-popup")) returnFocus();
+});
+// Esc đóng popup ở bất cứ đâu (Leaflet chỉ bắt Esc khi chính bản đồ đang được focus)
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && PLACES.some(p => p.popup.isOpen())) map.closePopup();
+});
 const isPlaceOpen = p => sheetPlace === p || p.popup.isOpen();
 // Dựng lại nội dung đang mở (vd. thời tiết vừa tải xong)
 function refreshPlace(p) {
-  if (p.popup.isOpen()) p.popup.update();
-  if (sheetPlace === p) renderSheet();
+  const root = p.popup.isOpen() ? p.popup.getElement() : sheetPlace === p ? sheet : null;
+  if (!root) return;
+  const hadFocus = root.contains(document.activeElement);
+  if (p.popup.isOpen()) p.popup.update(); else renderSheet();
+  if (hadFocus) focusPlaceTitle(p.popup.isOpen() ? p.popup.getElement() : sheet);
 }
 
 sheet.querySelector(".sheet-close").onclick = closeSheet;

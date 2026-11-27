@@ -4,7 +4,7 @@
 .season-title { font-size:15px; margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .season-title b { color:var(--season-ink); }
 .season-months { display:flex; gap:4px; align-items:flex-end; overflow-x:auto; padding-bottom:2px; }
-.month { position:relative; flex:0 0 auto; width:38px; height:40px; border:1px solid var(--line); background:#fffaf0; border-radius:3px;
+.month { position:relative; flex:0 0 auto; width:38px; height:40px; border:1px solid color-mix(in srgb, var(--sepia) 80%, var(--paper)); background:#fffaf0; border-radius:3px;
          cursor:pointer; font:inherit; font-size:14px; color:var(--ink); display:flex; flex-direction:column;
          justify-content:flex-end; align-items:center; gap:2px; padding:0 0 3px; }
 .month .bar { width:16px; height:calc(4px + var(--h) * 14px); border-radius:2px; background:var(--season); opacity:.35; }

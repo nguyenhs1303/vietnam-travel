@@ -39,7 +39,7 @@
 .history-mode .leaflet-marker-icon:not(.history-hot) .place-name { opacity:.35; }
 .leaflet-marker-icon.history-hot { z-index:10000 !important; }
 .history-mode .history-hot .pin { opacity:1; filter:none; }
-.history-mode .history-hot .pin::before { border-color:rgba(178,40,20,.9); animation:ring-out 1.6s ease-out infinite; }
+.history-mode .history-hot .pin::before { border-color:rgba(178,40,20,.9); opacity:1; animation:ring-out 1.6s ease-out 2; }
 .history-mode .history-hot .pin img { filter:none; }
 .far .leaflet-marker-icon.history-hot .place-name { opacity:1; }
 @media (prefers-reduced-motion:reduce) { .history-mode .history-hot .pin::before { animation:none; opacity:1; } }

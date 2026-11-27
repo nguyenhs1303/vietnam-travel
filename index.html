@@ -36,20 +36,29 @@
       </pattern>
     </defs>
   </svg>
+  <!-- Lối tắt cho bàn phím: chỉ hiện khi được focus (Tab đầu tiên) -->
+  <nav class="skip-links" aria-label="Lối tắt">
+    <a href="#list" data-skip="list">Tới danh sách địa danh</a>
+    <a href="#map" data-skip="map">Tới bản đồ</a>
+    <a href="#map" data-skip="bar">Tới thanh chọn tháng / dòng thời gian</a>
+  </nav>
+  <!-- Thông báo cho trình đọc màn hình (số kết quả, tháng đang chọn, thời tiết…) — ẩn khỏi mắt -->
+  <div id="sr-status" class="sr-only" role="status" aria-live="polite"></div>
   <aside id="sidebar">
     <header>
       <h1>Khám phá Việt Nam</h1>
-      <input id="search" type="search" aria-label="Tìm địa điểm, tỉnh/thành hoặc món ăn" placeholder="Tìm địa điểm, tỉnh, món ăn… (vd: phở)">
+      <label for="search" class="search-label">Tìm địa điểm, tỉnh hoặc món ăn</label>
+      <input id="search" type="search" placeholder="vd: phở, Huế, Hạ Long…">
       <div id="filters"></div>
       <!-- Top 3 nơi nên đi lúc này (chấm theo mùa + dự báo 3 ngày) -->
       <details id="best-now" open>
-        <summary>✨ Đẹp nhất lúc này</summary>
-        <div class="best-body"><p class="best-wait">⏳ Đang tính…</p></div>
+        <summary><span aria-hidden="true">✨</span> Đẹp nhất lúc này</summary>
+        <div class="best-body"><p class="best-wait"><span aria-hidden="true">⏳</span> Đang tính…</p></div>
       </details>
     </header>
-    <ul id="list"></ul>
+    <ul id="list" aria-label="Danh sách địa danh"></ul>
   </aside>
-  <main id="map"></main>
+  <main id="map" aria-label="Bản đồ danh thắng"></main>
 
   <script src="vendor/leaflet/leaflet.js"></script>
   <!-- Dữ liệu -->

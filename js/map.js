@@ -10,7 +10,9 @@
 const SEA = "#f1e5c8";
 const toLatLng = ring => ring.map(([lng, lat]) => [lat, lng]);
 
-const map = L.map("map", { zoomControl:true }).setView([16.3, 106.5], 6);
+const map = L.map("map", { zoomControl:false }).setView([16.3, 106.5], 6);
+// Nút +/− với nhãn tiếng Việt (mặc định của Leaflet là "Zoom in" / "Zoom out")
+L.control.zoom({ zoomInTitle: "Phóng to", zoomOutTitle: "Thu nhỏ" }).addTo(map);
 map.attributionControl.setPrefix("").addAttribution(
   'Dữ liệu: Natural Earth · © OpenStreetMap contributors · Thời tiết: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>');
 
@@ -18,6 +20,9 @@ map.attributionControl.setPrefix("").addAttribution(
 [["ripple", 300], ["osm", 305], ["land", 310], ["neighbors", 325], ["water", 330], ["grid", 335], ["labels", 450]]
   .forEach(([name, z]) => { map.createPane(name).style.zIndex = z; });
 map.getPane("labels").style.pointerEvents = "none";
+// Các lớp vẽ bản đồ giấy chỉ để nhìn: trình đọc màn hình bỏ qua (không thì đọc "B I Ể N Đ Ô N G" từng chữ, "8°B"…)
+["ripple", "osm", "land", "neighbors", "water", "grid", "labels", "tilePane", "overlayPane"]
+  .forEach(name => map.getPane(name).setAttribute("aria-hidden", "true"));
 const paperSvg = pane => L.svg({ pane, padding: 0.5 });
 // Riêng lớp sóng ven bờ vẽ bằng Canvas: nét rất dày chạy dọc mọi bờ biển, vẽ bằng SVG làm lần kéo bản đồ đầu tiên bị giật;
 // Canvas vẽ một lần thành ảnh, kéo bản đồ chỉ dịch ảnh đó đi.

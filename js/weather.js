@@ -35,31 +35,32 @@ function weatherTips(p, c) {
 
 const DAY_LABELS = ["Hôm nay", "Ngày mai", "Ngày kia"];
 function weatherHtml(p) {
-  if (weatherState === "loading" && !p.weather) return `<div class="wx wx-wait">⏳ Đang tải thời tiết…</div>`;
+  if (weatherState === "loading" && !p.weather) return `<div class="wx wx-wait">${deco("⏳")} Đang tải thời tiết…</div>`;
   if (!p.weather) return `<div class="wx wx-wait">Không tải được thời tiết. Kiểm tra kết nối mạng.
-    <br><button type="button" class="wx-retry">↻ Thử lại</button></div>`;
+    <br><button type="button" class="wx-retry">${deco("↻")} Thử lại</button></div>`;
   const c = p.weather.current, d = p.weather.daily, time = c.time.slice(11, 16);
   const r = p.rating;
-  return `${r ? `<div class="score-line"><span class="score-badge">${r.score}</span>
+  return `${r ? `<div class="score-line"><span class="score-badge">${r.score}${srOnly(" điểm")}</span>
       <span><b>${r.verdict}</b> · hạng ${p.rank}/${PLACES.length} lúc này<small>${r.reasons.join(" · ")}</small></span></div>` : ""}
   <div class="wx">
     <div class="wx-now">
-      <span class="wx-ico">${wxIcon(c.weather_code, c.is_day)}</span>
+      <span class="wx-ico" aria-hidden="true">${wxIcon(c.weather_code, c.is_day)}</span>
       <span class="wx-temp">${Math.round(c.temperature_2m)}°</span>
       <span class="wx-desc"><b>${wxText(c.weather_code)}</b>
         <small>Cảm giác ${Math.round(c.apparent_temperature)}° · Ẩm ${c.relative_humidity_2m}% · Gió ${Math.round(c.wind_speed_10m)} km/h</small></span>
     </div>
-    <ul class="wx-tips">${weatherTips(p, c).map(t => `<li>${t}</li>`).join("")}</ul>
+    <ul class="wx-tips">${weatherTips(p, c).map(t => `<li>${t.replace(/^(\S+) /, (_, e) => deco(e) + " ")}</li>`).join("")}</ul>
     <div class="wx-days">${d.time.map((_, i) => `
-      <div><small>${DAY_LABELS[i]}</small><span>${wxIcon(d.weather_code[i])}</span>
-        <b>${Math.round(d.temperature_2m_max[i])}°</b><small>${Math.round(d.temperature_2m_min[i])}° · 💧${d.precipitation_probability_max[i] ?? 0}%</small></div>`).join("")}
+      <div><small>${DAY_LABELS[i]}</small><span role="img" aria-label="${wxText(d.weather_code[i])}">${wxIcon(d.weather_code[i])}</span>
+        <b>${srOnly("cao nhất ")}${Math.round(d.temperature_2m_max[i])}°</b><small>${srOnly("thấp nhất ")}${Math.round(d.temperature_2m_min[i])}° · ${deco("💧")}${srOnly("khả năng mưa ")}${d.precipitation_probability_max[i] ?? 0}%</small></div>`).join("")}
     </div>
     <div class="wx-src">Thời tiết lúc ${time} · Open-Meteo</div>
   </div>`;
 }
 // Nhiệt độ nhỏ ở danh sách bên trái
 const weatherMini = p => p.weather
-  ? `${wxIcon(p.weather.current.weather_code, p.weather.current.is_day)} ${Math.round(p.weather.current.temperature_2m)}°` : "";
+  ? `${deco(wxIcon(p.weather.current.weather_code, p.weather.current.is_day))}${srOnly(wxText(p.weather.current.weather_code) + ",")} ` +
+    `${Math.round(p.weather.current.temperature_2m)}°` : "";
 
 async function loadWeather() {
   // Một yêu cầu cho cả 16 nơi (Open-Meteo nhận nhiều toạ độ, trả về mảng theo đúng thứ tự)
@@ -77,10 +78,13 @@ async function loadWeather() {
     const list = Array.isArray(data) ? data : [data];
     PLACES.forEach((p, i) => { if (list[i]?.current) p.weather = list[i]; });
     weatherState = "ok";
+    if (weatherRetrying) announce("Đã tải xong thời tiết.");
   } catch (err) {
     console.warn("Không tải được thời tiết:", err);
     weatherState = "error";                    // giữ dữ liệu cũ (nếu có), chỉ báo lỗi khi chưa có gì
+    if (!PLACES.some(p => p.weather)) announce("Không tải được thời tiết. Có nút Thử lại trong khung Đẹp nhất lúc này.");
   }
+  weatherRetrying = false;
   refreshWeatherUI();
 }
 // Vẽ lại mọi chỗ có thời tiết: Top 3, nhiệt độ ở danh sách, popup đang mở
@@ -93,9 +97,12 @@ function refreshWeatherUI() {
   });
 }
 // Nút "Thử lại" (trong popup và khung Top 3): hiện lại trạng thái đang tải rồi gọi lại API
+let weatherRetrying = false;
 function retryWeather() {
   if (weatherState === "loading") return;
   weatherState = "loading";
+  weatherRetrying = true;
+  announce("Đang tải lại thời tiết…");
   refreshWeatherUI();
   loadWeather();
 }
