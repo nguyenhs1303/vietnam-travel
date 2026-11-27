@@ -21,3 +21,17 @@ document.querySelectorAll(".skip-links a").forEach(a => a.onclick = e => {
   }[a.dataset.skip]();
   target?.focus();
 });
+
+// Cả trang không bao giờ cần cuộn (chỉ thanh bên / bảng trượt cuộn bên trong). Safari iOS vẫn có thể dời trang: chạm ô tìm
+// kiếm → bàn phím bật lên, Safari cuộn trang cho ô nhập khỏi bị che, đóng bàn phím xong không cuộn về → bản đồ trôi khỏi
+// màn hình, nửa dưới trống. Hễ trang bị cuộn mà người dùng không đang gõ thì đưa về đầu.
+// (Không can thiệp khi người dùng đang phóng to trang bằng hai ngón — họ cần kéo để xem các phần khác.)
+const isTyping = () => document.activeElement?.matches("input, textarea");
+const isPinchZoomed = () => (window.visualViewport?.scale || 1) > 1.01;
+const resetPageScroll = () => {
+  const se = document.scrollingElement;
+  if (!isTyping() && !isPinchZoomed() && (se.scrollTop || se.scrollLeft)) se.scrollTo(0, 0);
+};
+addEventListener("scroll", resetPageScroll, { passive: true });
+document.addEventListener("focusout", () => setTimeout(resetPageScroll, 100));   // đóng bàn phím
+window.visualViewport?.addEventListener("resize", resetPageScroll);

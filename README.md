@@ -20,7 +20,7 @@ rồi mở `http://localhost:5577`. Cần có mạng để tải font, thời ti
 
 ```bash
 npm install && npx playwright install chromium   # lần đầu
-npm test                                          # 114 bài, ~3 phút
+npm test                                          # 119 bài, ~3 phút
 ```
 
 Chi tiết, cách viết thêm bài: [`tests/README.md`](tests/README.md). GitHub Actions tự chạy cho mỗi pull request.
@@ -127,6 +127,9 @@ Trang nhắm chuẩn WCAG 2.1 AA. Khi sửa giao diện, giữ các quy ước s
   Số và đơn vị nối bằng khoảng trắng không ngắt (`\u00a0`): "12\u00a0km/h".
 - **Màu chữ** ≥ 4.5:1 so với nền (chữ to ≥ 3:1), viền ô nhập / nút ≥ 3:1 — cả ban ngày lẫn ban đêm (`css/night.css`).
 - **Hiệu ứng tự chạy** phải dừng trong 5 giây (vòng sáng chỉ chạy 2 lượt) và tắt hẳn khi máy bật "giảm chuyển động".
+- **Chữ ẩn cho trình đọc màn hình** (`.sr-only`, `srOnly()`) dùng `position:absolute`: khung cuộn chứa nó phải có
+  `position` (như `#sidebar`, `#list`, `.ppanel`), không thì nó kéo dài cả trang và trang cuộn được (lỗi iPhone: bản đồ
+  trôi khỏi màn hình). Bài `[iOS cuộn]` trong `tests/mobile.spec.js` canh lỗi này.
 - **Vùng chạm** trên màn hình cảm ứng ≥ 40px (`@media (pointer:coarse)` trong `css/responsive.css`).
 
 ## Nguồn dữ liệu & giấy phép

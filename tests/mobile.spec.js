@@ -260,3 +260,62 @@ test.describe("Máy tính — dòng thời gian", () => {
     await expect(app.page.locator(".tl-more")).toBeHidden();
   });
 });
+
+// ---------- Safari iOS: trang bị cuộn lệch sau khi đóng bàn phím (nửa dưới màn hình trống, lộ nền nâu) ----------
+// Chromium không có bàn phím ảo → giả lập phần Safari thêm vào: chèn khoảng trống sau <body> cho trang cuộn được rồi cuộn đi
+const simulateIOSKeyboardScroll = (app, y) => app.page.evaluate(y => {
+  let pad = document.getElementById("__ios-pad");
+  if (!pad) { pad = document.createElement("div"); pad.id = "__ios-pad"; pad.style.height = "600px"; document.documentElement.appendChild(pad); }
+  document.scrollingElement.scrollTop = y;
+  return document.scrollingElement.scrollTop;
+}, y);
+const pageScrollY = app => app.page.evaluate(() => document.scrollingElement.scrollTop);
+
+test.describe("[iOS cuộn] iPhone 15 Pro", () => {
+  const { defaultBrowserType, ...iPhone15Pro } = require("@playwright/test").devices["iPhone 15 Pro"];
+  test.use({ ...iPhone15Pro });
+
+  test("cả trang không cuộn được ở mọi trạng thái (chỉ thanh bên / bảng trượt cuộn bên trong)", async ({ app }) => {
+    const overflow = () => app.page.evaluate(() => document.scrollingElement.scrollHeight - innerHeight);
+    expect(await overflow()).toBeLessThanOrEqual(0);
+    await app.page.getByRole("button", { name: "Chọn tháng" }).tap();
+    expect(await overflow()).toBeLessThanOrEqual(0);
+    await app.open("Hội An");
+    expect(await overflow()).toBeLessThanOrEqual(0);
+    await app.page.evaluate(() => closePlace());
+    await app.page.tap(".season-bar .mode-btn"); await app.page.waitForTimeout(1200);
+    await app.page.getByRole("button", { name: "Đọc thêm" }).tap();
+    expect(await overflow()).toBeLessThanOrEqual(0);
+  });
+
+  test("trang bị cuộn lệch khi không gõ phím → tự cuộn về đầu", async ({ app }) => {
+    expect(await simulateIOSKeyboardScroll(app, 400)).toBe(400);
+    await app.page.waitForTimeout(250);
+    expect(await pageScrollY(app)).toBe(0);
+  });
+
+  test("đang gõ tìm kiếm: để Safari cuộn (ô nhập không bị bàn phím che); đóng bàn phím → cuộn về đầu", async ({ app }) => {
+    await app.page.focus("#search");
+    await simulateIOSKeyboardScroll(app, 330);
+    await app.page.waitForTimeout(250);
+    expect(await pageScrollY(app), "đang gõ thì giữ").toBe(330);
+    await app.page.evaluate(() => document.activeElement.blur());   // đóng bàn phím
+    await app.page.waitForTimeout(400);
+    expect(await pageScrollY(app), "đóng bàn phím xong").toBe(0);
+  });
+
+  test("nền phía sau trang cùng màu giấy (lỡ lộ ra cũng không thành mảng nâu sẫm), ban ngày và ban đêm", async ({ app }) => {
+    const canvasBg = () => app.page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor);
+    expect(await canvasBg()).toBe("rgb(246, 236, 212)");
+    await app.page.tap(".day-night-switch");
+    await expect.poll(canvasBg).toBe("rgb(27, 45, 71)");
+  });
+});
+
+test.describe("[iOS cuộn] máy tính", () => {
+  test("cả trang không cuộn được (chữ ẩn cho trình đọc màn hình không được kéo dài trang)", async ({ app }) => {
+    expect(await app.page.evaluate(() => document.scrollingElement.scrollHeight - innerHeight)).toBeLessThanOrEqual(0);
+    await app.open("Hội An");
+    expect(await app.page.evaluate(() => document.scrollingElement.scrollHeight - innerHeight)).toBeLessThanOrEqual(0);
+  });
+});
