@@ -15,7 +15,9 @@
 * { box-sizing:border-box; margin:0; }
 /* 100dvh: chiều cao phần nhìn thấy thật trên điện thoại (trừ thanh địa chỉ / thanh công cụ của trình duyệt);
    100vh đứng trước cho trình duyệt cũ chưa hiểu dvh */
-body { display:flex; height:100vh; height:100dvh; font-family:var(--serif); font-size:16px; color:var(--ink); background:#3b2a19;
+/* body là khung cố định phủ màn hình (kiểu ứng dụng bản đồ): trang không có nội dung "chảy" nên KHÔNG THỂ cuộn,
+   kể cả khi có phần tử nào đó tràn ra (Safari iOS cuộn cả trang → bản đồ trôi khỏi màn hình) */
+body { position:fixed; top:0; left:0; right:0; display:flex; height:100vh; height:100dvh; font-family:var(--serif); font-size:16px; color:var(--ink); background:#3b2a19;
        font-variant-numeric:lining-nums; }   /* chữ số đều chiều cao (Playfair mặc định oldstyle: "22°" trông thành "22 °") */
 
 /* Vân giấy dùng chung (nhiễu SVG, không cần tải ảnh) */

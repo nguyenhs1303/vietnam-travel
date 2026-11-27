@@ -15,12 +15,16 @@ python -m http.server 5577
 rồi mở `http://localhost:5577`. Cần có mạng để tải font, thời tiết và nền OpenStreetMap khi phóng to.
 
 > Sửa file xong mà không thấy thay đổi: bấm **Ctrl + F5** để trình duyệt bỏ bản lưu tạm.
+>
+> **Khi sửa CSS / JS / data:** đổi mã phiên bản `?v=…` trong `index.html` (cùng một giá trị cho mọi file, vd. thay
+> `2026-11-27b` bằng ngày + chữ cái mới). Không đổi thì người xem (nhất là Safari trên iPhone) có thể vẫn chạy bản cũ
+> đã lưu đệm sau khi GitHub Pages đã cập nhật. `tests/mobile.spec.js` kiểm tra các file cùng một phiên bản.
 
 ## Kiểm thử
 
 ```bash
 npm install && npx playwright install chromium   # lần đầu
-npm test                                          # 119 bài, ~3 phút
+npm test                                          # 122 bài, ~3 phút
 ```
 
 Chi tiết, cách viết thêm bài: [`tests/README.md`](tests/README.md). GitHub Actions tự chạy cho mỗi pull request.
