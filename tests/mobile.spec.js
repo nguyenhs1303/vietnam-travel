@@ -265,7 +265,7 @@ test.describe("Máy tính — dòng thời gian", () => {
 // Chromium không có bàn phím ảo → giả lập phần Safari thêm vào: chèn khoảng trống sau <body> cho trang cuộn được rồi cuộn đi
 const simulateIOSKeyboardScroll = (app, y) => app.page.evaluate(y => {
   let pad = document.getElementById("__ios-pad");
-  if (!pad) { pad = document.createElement("div"); pad.id = "__ios-pad"; pad.style.height = "600px"; document.documentElement.appendChild(pad); }
+  if (!pad) { pad = document.createElement("div"); pad.id = "__ios-pad"; pad.style.height = "2000px"; document.documentElement.appendChild(pad); }
   document.scrollingElement.scrollTop = y;
   return document.scrollingElement.scrollTop;
 }, y);
@@ -318,4 +318,37 @@ test.describe("[iOS cuộn] máy tính", () => {
     await app.open("Hội An");
     expect(await app.page.evaluate(() => document.scrollingElement.scrollHeight - innerHeight)).toBeLessThanOrEqual(0);
   });
+});
+
+test.describe("[iOS cuộn 2] iPhone 15 Pro — chống cuộn kể cả khi có phần tử tràn", () => {
+  const { defaultBrowserType, ...iPhone15Pro } = require("@playwright/test").devices["iPhone 15 Pro"];
+  test.use({ ...iPhone15Pro });
+  test("một phần tử bất kỳ tràn xuống dưới (như lỗi .sr-only cũ) cũng không làm cả trang cuộn được", async ({ app }) => {
+    const over = await app.page.evaluate(() => {
+      const x = document.createElement("div");
+      x.style.cssText = "position:absolute;top:1500px;width:10px;height:10px";
+      document.body.appendChild(x);
+      return document.scrollingElement.scrollHeight - innerHeight;
+    });
+    expect(over).toBeLessThanOrEqual(0);
+  });
+  test("Safari chỉ dời vùng nhìn thấy (visualViewport) mà scrollTop = 0: vẫn đưa về", async ({ app }) => {
+    const called = await app.page.evaluate(async () => {
+      let n = 0; const orig = window.scrollTo; window.scrollTo = (...a) => { n++; return orig.apply(window, a); };
+      Object.defineProperty(window.visualViewport, "offsetTop", { configurable: true, get: () => 280 });
+      window.visualViewport.dispatchEvent(new Event("scroll"));
+      await new Promise(r => setTimeout(r, 50));
+      return n;
+    });
+    expect(called).toBeGreaterThan(0);
+  });
+});
+
+test("mọi CSS / JS của trang mang cùng mã phiên bản ?v= (Safari không dùng bản cũ đã lưu đệm sau khi cập nhật)", async () => {
+  const html = require("fs").readFileSync(require("path").join(__dirname, "..", "index.html"), "utf8");
+  const local = [...html.matchAll(/(?:href|src)="((?:css|js|data)\/[^"]+)"/g)].map(m => m[1]);
+  expect(local.length).toBeGreaterThan(20);
+  const versions = new Set(local.map(u => (u.match(/\?v=([\w.-]+)$/) || [])[1]));
+  expect([...versions], "tất cả cùng một ?v=").toHaveLength(1);
+  expect([...versions][0]).toBeTruthy();
 });

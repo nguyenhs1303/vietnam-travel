@@ -29,9 +29,12 @@ document.querySelectorAll(".skip-links a").forEach(a => a.onclick = e => {
 const isTyping = () => document.activeElement?.matches("input, textarea");
 const isPinchZoomed = () => (window.visualViewport?.scale || 1) > 1.01;
 const resetPageScroll = () => {
-  const se = document.scrollingElement;
-  if (!isTyping() && !isPinchZoomed() && (se.scrollTop || se.scrollLeft)) se.scrollTo(0, 0);
+  if (isTyping() || isPinchZoomed()) return;
+  const se = document.scrollingElement, vvTop = window.visualViewport?.offsetTop || 0;
+  // Safari có khi chỉ dời vùng nhìn thấy (visualViewport.offsetTop) mà scrollTop vẫn 0 → kiểm tra cả hai
+  if (se.scrollTop || se.scrollLeft || vvTop > 0.5) window.scrollTo(0, 0);
 };
 addEventListener("scroll", resetPageScroll, { passive: true });
 document.addEventListener("focusout", () => setTimeout(resetPageScroll, 100));   // đóng bàn phím
 window.visualViewport?.addEventListener("resize", resetPageScroll);
+window.visualViewport?.addEventListener("scroll", resetPageScroll);

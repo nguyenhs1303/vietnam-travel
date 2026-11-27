@@ -9,17 +9,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@600;800&display=swap">
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-  <!-- Giao diện: nạp đúng thứ tự này (file sau ghi đè file trước) -->
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/best-now.css">
-  <link rel="stylesheet" href="css/map.css">
-  <link rel="stylesheet" href="css/popup.css">
-  <link rel="stylesheet" href="css/season-bar.css">
-  <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="css/night.css">
-  <link rel="stylesheet" href="css/timeline.css">
-  <link rel="stylesheet" href="css/intro.css">
-  <link rel="stylesheet" href="css/responsive.css">
+  <!-- Giao diện: nạp đúng thứ tự này (file sau ghi đè file trước).
+       ?v=…: mã phiên bản — ĐỔI mỗi lần sửa CSS/JS/data (cùng một giá trị cho mọi file) để Safari / trình duyệt không dùng
+       bản cũ đã lưu đệm (GitHub Pages cho lưu 10 phút, Safari có khi lâu hơn). tests/mobile.spec.js kiểm tra. -->
+  <link rel="stylesheet" href="css/base.css?v=2026-11-27b">
+  <link rel="stylesheet" href="css/best-now.css?v=2026-11-27b">
+  <link rel="stylesheet" href="css/map.css?v=2026-11-27b">
+  <link rel="stylesheet" href="css/popup.css?v=2026-11-27b">
+  <link rel="stylesheet" href="css/season-bar.css?v=2026-11-27b">
+  <link rel="stylesheet" href="css/theme.css?v=2026-11-27b">
+  <link rel="stylesheet" href="css/night.css?v=2026-11-27b">
+  <link rel="stylesheet" href="css/timeline.css?v=2026-11-27b">
+  <link rel="stylesheet" href="css/intro.css?v=2026-11-27b">
+  <link rel="stylesheet" href="css/responsive.css?v=2026-11-27b">
 </head>
 <body>
   <!-- Mẫu gạch chéo cho nước láng giềng (bản đồ ngày / đêm) -->
@@ -62,24 +64,24 @@
 
   <script src="vendor/leaflet/leaflet.js"></script>
   <!-- Dữ liệu -->
-  <script src="data/data.js"></script>
-  <script src="data/photo-credits.js"></script>
-  <script src="data/vietnam-border.js"></script>
-  <script src="data/paper-data.js"></script>
+  <script src="data/data.js?v=2026-11-27b"></script>
+  <script src="data/photo-credits.js?v=2026-11-27b"></script>
+  <script src="data/vietnam-border.js?v=2026-11-27b"></script>
+  <script src="data/paper-data.js?v=2026-11-27b"></script>
   <!-- Mã: các file dùng chung biến toàn cục nên phải nạp đúng thứ tự (xem README.md) -->
-  <script src="js/map.js"></script>
-  <script src="js/map-controls.js"></script>
-  <script src="js/theme.js"></script>
-  <script src="js/places.js"></script>
-  <script src="js/weather.js"></script>
-  <script src="js/best-now.js"></script>
-  <script src="js/popup.js"></script>
-  <script src="js/markers.js"></script>
-  <script src="js/declutter.js"></script>
-  <script src="js/season.js"></script>
-  <script src="js/timeline.js"></script>
-  <script src="js/list.js"></script>
-  <script src="js/intro.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/map.js?v=2026-11-27b"></script>
+  <script src="js/map-controls.js?v=2026-11-27b"></script>
+  <script src="js/theme.js?v=2026-11-27b"></script>
+  <script src="js/places.js?v=2026-11-27b"></script>
+  <script src="js/weather.js?v=2026-11-27b"></script>
+  <script src="js/best-now.js?v=2026-11-27b"></script>
+  <script src="js/popup.js?v=2026-11-27b"></script>
+  <script src="js/markers.js?v=2026-11-27b"></script>
+  <script src="js/declutter.js?v=2026-11-27b"></script>
+  <script src="js/season.js?v=2026-11-27b"></script>
+  <script src="js/timeline.js?v=2026-11-27b"></script>
+  <script src="js/list.js?v=2026-11-27b"></script>
+  <script src="js/intro.js?v=2026-11-27b"></script>
+  <script src="js/main.js?v=2026-11-27b"></script>
 </body>
 </html>
