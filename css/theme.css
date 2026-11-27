@@ -38,9 +38,9 @@ body, #sidebar, #map, .leaflet-popup-content-wrapper, .cartouche, .season-bar, .
 .theme-clock { display:flex; flex-direction:column; align-items:flex-start; line-height:1; padding-right:9px;
                border-right:1px solid var(--line); }
 .clock-time { font-family:var(--display); font-weight:800; font-size:21px; letter-spacing:.5px; color:var(--ink);
-              font-variant-numeric:tabular-nums; }
+              font-variant-numeric:lining-nums tabular-nums; }
 .clock-time .colon { display:inline-block; margin:0 1px; }   /* không nhấp nháy: chuyển động tự chạy mãi không dừng được (WCAG 2.2.2) */
-.clock-date { margin-top:3px; font-size:11px; font-style:italic; color:var(--muted); white-space:nowrap; }
+.clock-date { margin-top:3px; font-size:13px; color:var(--muted); white-space:nowrap; }
 .night .clock-time { text-shadow:0 0 8px rgba(230,207,150,.35); }
 .theme-side { display:flex; flex-direction:column; align-items:flex-start; line-height:1.15; }
 .theme-auto { font:inherit; font-size:13px; padding:2px 10px; min-height:26px; border:1px solid color-mix(in srgb, var(--sepia) 80%, var(--paper)); border-radius:999px;
@@ -48,4 +48,4 @@ body, #sidebar, #map, .leaflet-popup-content-wrapper, .cartouche, .season-bar, .
 .theme-auto:hover { border-color:var(--season); }
 .theme-auto[aria-pressed="true"] { background:var(--season-ink); border-color:var(--season-ink); color:#fff; }
 .night .theme-auto[aria-pressed="true"] { color:#1b1200; }
-.theme-note { margin-top:2px; font-size:11px; font-style:italic; color:var(--muted); white-space:nowrap; }
+.theme-note { margin-top:2px; font-size:13px; color:var(--muted); white-space:nowrap; }

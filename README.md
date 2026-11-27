@@ -20,7 +20,7 @@ rồi mở `http://localhost:5577`. Cần có mạng để tải font, thời ti
 
 ```bash
 npm install && npx playwright install chromium   # lần đầu
-npm test                                          # 83 bài, ~2–3 phút
+npm test                                          # 114 bài, ~3 phút
 ```
 
 Chi tiết, cách viết thêm bài: [`tests/README.md`](tests/README.md). GitHub Actions tự chạy cho mỗi pull request.
@@ -121,6 +121,10 @@ Trang nhắm chuẩn WCAG 2.1 AA. Khi sửa giao diện, giữ các quy ước s
 - **Thông báo thay đổi** (số kết quả, tháng đang chọn, thời tiết) gọi `announce("…")` — đọc qua vùng `#sr-status`.
 - **Mở thông tin địa danh** luôn qua `openPlace()` / `closePlace()` (`js/popup.js`): tự đưa focus vào tiêu đề và trả focus
   về nút đã bấm khi đóng.
+- **Cỡ chữ**: EB Garamond có chữ thường thấp (x-height 0,41) nên tối thiểu 13px (chữ nghiêng 14px); Playfair Display
+  chỉ dùng từ 18px (nét thanh rất mảnh khi nhỏ); dòng ghi nguồn tối thiểu 12px. Kiểm tra: `tests/typography.spec.js`.
+- **Chữ số** đều chiều cao (`font-variant-numeric: lining-nums` trên body; Playfair mặc định là chữ số oldstyle).
+  Số và đơn vị nối bằng khoảng trắng không ngắt (`\u00a0`): "12\u00a0km/h".
 - **Màu chữ** ≥ 4.5:1 so với nền (chữ to ≥ 3:1), viền ô nhập / nút ≥ 3:1 — cả ban ngày lẫn ban đêm (`css/night.css`).
 - **Hiệu ứng tự chạy** phải dừng trong 5 giây (vòng sáng chỉ chạy 2 lượt) và tắt hẳn khi máy bật "giảm chuyển động".
 - **Vùng chạm** trên màn hình cảm ứng ≥ 40px (`@media (pointer:coarse)` trong `css/responsive.css`).

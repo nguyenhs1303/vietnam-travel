@@ -7,8 +7,23 @@ seasonBar.onAdd = () => {
   const el = L.DomUtil.create("div", "season-bar");
   L.DomEvent.disableClickPropagation(el);
   L.DomEvent.disableScrollPropagation(el);
-  el.innerHTML = `<div class="bar-head"><div class="season-title"></div><button type="button" class="mode-btn" data-mode="history" title="Xem các mốc lịch sử trên bản đồ">${deco("⏳")} Lịch sử</button></div><div class="season-months" role="group" aria-label="Chọn tháng"></div>`;
+  el.innerHTML = `<div class="bar-head"><div class="season-title"></div>
+    <button type="button" class="months-toggle" aria-label="Chọn tháng" aria-controls="season-months" aria-expanded="true">${deco("▾")}</button>
+    <button type="button" class="mode-btn" data-mode="history" title="Xem các mốc lịch sử trên bản đồ">${deco("⏳")} Lịch sử</button></div>
+    <div class="season-months" id="season-months" role="group" aria-label="Chọn tháng"></div>`;
   const row = el.querySelector(".season-months");
+  // Màn hình nhỏ: thu hàng tháng lại còn một dòng tiêu đề (bản đồ chỉ còn ~nửa màn hình); nút ▾ hoặc chạm tiêu đề để mở
+  const toggle = el.querySelector(".months-toggle");
+  const small = matchMedia("(max-width:760px)");
+  const setOpen = open => {
+    el.classList.toggle("collapsed", !open);
+    toggle.setAttribute("aria-expanded", open);
+    if (open) requestAnimationFrame(updateSeasonBar);   // hiện ra rồi mới cuộn được tháng đang chọn vào giữa
+  };
+  toggle.onclick = () => setOpen(el.classList.contains("collapsed"));
+  el.querySelector(".season-title").onclick = () => { if (small.matches) toggle.click(); };
+  setOpen(!small.matches);
+  small.addEventListener("change", e => setOpen(!e.matches));
 
   const counts = Array.from({ length: 13 }, (_, m) => PLACES.filter(p => m === 0 || p.months.has(m)).length);
   const max = Math.max(...counts.slice(1));
@@ -53,8 +68,8 @@ function updateSeasonBar() {
   });
   const n = PLACES.filter(p => activeMonth && p.months.has(activeMonth)).length;
   document.querySelector(".season-title").innerHTML = activeMonth === 0
-    ? `${deco("🗓️")} Cả năm · chọn một tháng để xem nên đi đâu`
-    : `${deco("🗓️")} Tháng ${activeMonth}${activeMonth === CURRENT_MONTH ? `<span class="hide-sm"> (tháng này)</span>` : ""} đi đâu? · ` +
+    ? `${deco("🗓️")} Cả năm<span class="hide-sm"> · chọn một tháng để xem nên đi đâu</span><span class="show-sm"> · không lọc theo mùa</span>`
+    : `${deco("🗓️")} Tháng ${activeMonth}${activeMonth === CURRENT_MONTH ? `<span class="hide-sm"> (tháng này)</span>` : ""}<span class="hide-sm"> đi đâu?</span> · ` +
       `<b>${n} nơi</b><span class="hide-sm"> đang vào mùa đẹp</span><span class="show-sm"> đang đẹp</span>`;
 }
 

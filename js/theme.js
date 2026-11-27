@@ -45,6 +45,8 @@ function applyTheme() {
   sw.setAttribute("aria-checked", night);
   sw.title = night ? "Đang là bản đồ đêm — bấm để chuyển sang ngày" : "Đang là bản đồ ngày — bấm để chuyển sang đêm";
   auto.setAttribute("aria-pressed", themeMode === "auto");
+  // Màn hình nhỏ: đang Tự động thì chỉ hiện công tắc (CSS ẩn nút "Tự động"); gạt tay thì nút hiện lại để quay về
+  sw.closest(".theme-ctl").classList.toggle("is-auto", themeMode === "auto");
   auto.title = `Tự chuyển theo giờ mặt trời ở Việt Nam (hôm nay mọc ${vnTime(rise)}, lặn ${vnTime(set)})`;
   document.querySelector(".theme-note").textContent = themeMode === "auto"
     ? (sunIsDown ? `Tự sáng lúc ${vnTime(rise)}` : `Tự tối lúc ${vnTime(set)}`)
@@ -72,7 +74,11 @@ themeCtl.onAdd = () => {
   // Gạt công tắc: đảo trạng thái đang hiển thị, chuyển sang chỉnh tay
   box.querySelector(".day-night-switch").onclick = () =>
     setThemeMode(document.body.classList.contains("night") ? "day" : "night");
-  box.querySelector(".theme-auto").onclick = () => setThemeMode("auto");
+  box.querySelector(".theme-auto").onclick = e => {
+    setThemeMode("auto");
+    // Màn hình nhỏ: nút vừa bấm bị ẩn đi → chuyển focus sang công tắc thay vì để rơi về đầu trang
+    if (!e.currentTarget.offsetParent) box.querySelector(".day-night-switch").focus({ preventScroll: true });
+  };
   return box;
 };
 themeCtl.addTo(map);

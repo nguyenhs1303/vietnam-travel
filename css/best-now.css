@@ -1,12 +1,12 @@
 /* ===== "Đẹp nhất lúc này" ===== */
 #best-now { margin-top:12px; border:1px solid var(--line); border-radius:4px; background:color-mix(in srgb, var(--season) 6%, transparent); }
-#best-now summary { cursor:pointer; padding:5px 10px; font-family:var(--display); font-weight:600; font-size:15px; color:var(--ink);
+#best-now summary { cursor:pointer; padding:5px 10px; font-family:var(--serif); font-weight:600; font-size:17px; color:var(--ink);
                     list-style:none; display:flex; align-items:center; gap:6px; }
 #best-now summary::-webkit-details-marker { display:none; }
 #best-now summary::after { content:"▾"; margin-left:auto; font-size:13px; color:var(--muted); transition:transform .2s; }
 #best-now:not([open]) summary::after { transform:rotate(-90deg); }
 .best-body { padding:0 8px 6px; }
-.best-wait { font-size:13px; font-style:italic; color:var(--muted); padding:2px 2px 4px; }
+.best-wait { font-size:14px; font-style:italic; color:var(--muted); padding:2px 2px 4px; }
 .best-list { list-style:none; padding:0; margin:0; display:grid; gap:4px; }
 .best-list button { width:100%; display:flex; align-items:center; gap:9px; padding:5px 6px; text-align:left; cursor:pointer;
                     font:inherit; color:var(--ink); background:var(--paper); border:1px solid var(--line); border-radius:4px; }
@@ -14,19 +14,19 @@
 .best-list button:focus-visible { outline:2px solid var(--season); outline-offset:1px; }
 /* Số La Mã trong con dấu tròn kiểu triện */
 .best-rank { flex:0 0 auto; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-             font-family:var(--display); font-weight:800; font-size:13px; color:var(--accent); border:1.5px solid var(--accent);
+             font-family:var(--serif); font-weight:600; font-size:15px; color:var(--accent); border:1.5px solid var(--accent);
              box-shadow:inset 0 0 0 2px var(--paper), inset 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent); }
 .best-info { min-width:0; flex:1; display:flex; flex-direction:column; line-height:1.2; }
 .best-info b { font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.best-info small { font-size:12.5px; font-style:italic; color:var(--muted); }
+.best-info small { font-size:14px; font-style:italic; color:var(--muted); }
 .best-score { flex:0 0 auto; display:flex; flex-direction:column; align-items:center; line-height:1; }
 .best-score b { font-family:var(--display); font-weight:800; font-size:20px; color:var(--season-ink); }
-.best-score small { font-size:10.5px; color:var(--muted); margin-top:2px; white-space:nowrap; }
-.best-note { margin-top:4px; font-size:11.5px; font-style:italic; color:var(--muted); }
+.best-score small { font-size:13px; color:var(--muted); margin-top:2px; white-space:nowrap; }
+.best-note { margin-top:4px; font-size:14px; font-style:italic; color:var(--muted); }
 /* Điểm trong tab Thời tiết */
 .score-line { display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:14px; line-height:1.25; }
-.score-line small { display:block; font-size:12px; font-style:italic; color:var(--muted); }
+.score-line small { display:block; font-size:14px; font-style:italic; color:var(--muted); }
 .score-badge { flex:0 0 auto; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-               font-family:var(--display); font-weight:800; font-size:16px; color:#fff; background:var(--season-ink);
+               font-family:var(--serif); font-weight:600; font-size:18px; color:#fff; background:var(--season-ink);
                box-shadow:0 0 0 2px var(--paper), 0 0 0 3px var(--season-ink); }
 .night .score-badge { color:#1b1200; }

@@ -13,6 +13,7 @@ requestAnimationFrame(playIntro);
 // Lối tắt bàn phím (đầu trang): đưa focus tới dòng đầu danh sách / bản đồ / tháng đang chọn (hoặc thanh kéo lịch sử)
 document.querySelectorAll(".skip-links a").forEach(a => a.onclick = e => {
   e.preventDefault();
+  if (a.dataset.skip === "bar") document.querySelector(".season-bar.collapsed .months-toggle")?.click();
   const target = {
     list: () => listEl.querySelector(".row") || searchEl,
     map:  () => map.getContainer(),

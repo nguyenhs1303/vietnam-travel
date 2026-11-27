@@ -24,6 +24,16 @@ test.describe("axe-core: 0 vi phạm", () => {
   });
   test.describe("mobile", () => {
     test.use({ ...iPhone13 });
+    test("trang đầu: thanh tháng thu gọn rồi mở ra", async ({ app }) => {
+      expect(await app.axe()).toEqual([]);
+      await app.page.getByRole("button", { name: "Chọn tháng" }).tap();
+      expect(await app.axe()).toEqual([]);
+    });
+    test("lối tắt 'Tới thanh chọn tháng' mở hàng tháng đang thu gọn rồi focus vào tháng đang chọn", async ({ app }) => {
+      await app.page.focus(".skip-links a:nth-child(3)");
+      await app.page.keyboard.press("Enter");
+      await expect(app.page.locator(".season-bar .month.active")).toBeFocused();
+    });
     test("bảng trượt đang mở", async ({ app }) => {
       await app.open("Hạ Long");
       expect(await app.axe()).toEqual([]);

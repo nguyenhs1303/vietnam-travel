@@ -13,7 +13,10 @@
   --display:"Playfair Display", Georgia, serif;
 }
 * { box-sizing:border-box; margin:0; }
-body { display:flex; height:100vh; font-family:var(--serif); font-size:16px; color:var(--ink); background:#3b2a19; }
+/* 100dvh: chiều cao phần nhìn thấy thật trên điện thoại (trừ thanh địa chỉ / thanh công cụ của trình duyệt);
+   100vh đứng trước cho trình duyệt cũ chưa hiểu dvh */
+body { display:flex; height:100vh; height:100dvh; font-family:var(--serif); font-size:16px; color:var(--ink); background:#3b2a19;
+       font-variant-numeric:lining-nums; }   /* chữ số đều chiều cao (Playfair mặc định oldstyle: "22°" trông thành "22 °") */
 
 /* Vân giấy dùng chung (nhiễu SVG, không cần tải ảnh) */
 :root { --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .32 0 0 0 0 .15 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"); }
@@ -75,7 +78,7 @@ h1 { font-family:var(--display); font-weight:800; font-size:24px; color:var(--in
 .empty-reset:focus-visible, .wx-retry:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
 #list b { display:block; font-size:17px; font-weight:600; line-height:1.2; }
 #list small { color:var(--muted); font-size:14px; font-style:italic; }
-.cat { display:inline-block; margin-left:4px; font-size:12px; font-style:normal; font-weight:600; color:var(--c); background:var(--bg);
+.cat { display:inline-block; margin-left:4px; font-size:13px; font-style:normal; font-weight:600; color:var(--c); background:var(--bg);
        border-radius:999px; padding:0 7px; white-space:nowrap; vertical-align:1px; }
 /* Ô icon (khi không có ảnh) */
 #list .ico { flex:0 0 auto; width:44px; height:44px; border-radius:6px; display:flex; align-items:center; justify-content:center;
@@ -87,7 +90,7 @@ h1 { font-family:var(--display); font-weight:800; font-size:24px; color:var(--in
 #list li:hover .ico img, #list li.active .ico img { filter:none; }
 #list li.off .ico { opacity:.65; }   /* ngoài mùa: chỉ làm nhạt ảnh, giữ chữ đủ đậm để đọc */
 #list li.off .ico img { filter:grayscale(1) sepia(.3); }
-#list .tag { display:inline-block; margin-top:3px; font-size:12px; font-weight:600; font-style:normal; color:#7a4800;
+#list .tag { display:inline-block; margin-top:3px; font-size:13px; font-weight:600; font-style:normal; color:#7a4800;
              background:#f7dfae; border-radius:999px; padding:0 8px; }
 /* Nhiệt độ nhỏ ở góc phải mỗi dòng */
 #list .wx-mini { margin-left:auto; flex:0 0 auto; align-self:flex-start; font-size:14px; font-weight:600; color:#3f5f6c;

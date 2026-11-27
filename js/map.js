@@ -14,7 +14,8 @@ const map = L.map("map", { zoomControl:false }).setView([16.3, 106.5], 6);
 // Nút +/− với nhãn tiếng Việt (mặc định của Leaflet là "Zoom in" / "Zoom out")
 L.control.zoom({ zoomInTitle: "Phóng to", zoomOutTitle: "Thu nhỏ" }).addTo(map);
 map.attributionControl.setPrefix("").addAttribution(
-  'Dữ liệu: Natural Earth · © OpenStreetMap contributors · Thời tiết: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>');
+  '<span class="hide-sm">Dữ liệu: </span>Natural Earth · © OpenStreetMap contributors · <span class="hide-sm">Thời tiết: </span>' +
+  '<a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>');
 
 // Các lớp giấy xếp chồng (dưới → trên); popup/marker của Leaflet vẫn nằm trên cùng
 [["ripple", 300], ["osm", 305], ["land", 310], ["neighbors", 325], ["water", 330], ["grid", 335], ["labels", 450]]
