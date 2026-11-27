@@ -58,3 +58,14 @@ const cartoucheEl = document.querySelector(".cartouche");
 L.DomEvent.disableClickPropagation(cartoucheEl);
 cartoucheEl.title = "Bấm để xem bản đồ được vẽ lại";
 cartoucheEl.onclick = playIntro;
+// Bàn phím: khung tiêu đề là một nút (Enter / Space). Máy bật "giảm chuyển động" thì không có hiệu ứng → không làm nút.
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  cartoucheEl.setAttribute("role", "button");
+  cartoucheEl.tabIndex = 0;
+  cartoucheEl.setAttribute("aria-label", "Xem lại hiệu ứng bản đồ tự vẽ");
+  cartoucheEl.addEventListener("keydown", e => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    playIntro();
+  });
+}

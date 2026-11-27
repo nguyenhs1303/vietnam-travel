@@ -19,8 +19,8 @@ timelineBar.onAdd = () => {
   L.DomEvent.disableClickPropagation(el);
   L.DomEvent.disableScrollPropagation(el);
   el.innerHTML = `
-    <div class="bar-head"><div class="tl-title">⏳ Dòng thời gian lịch sử · <b>${EVENTS.length}</b> mốc</div>
-      <button type="button" class="mode-btn" data-mode="season" title="Quay lại chọn theo tháng">🗓️ Theo mùa</button></div>
+    <div class="bar-head"><div class="tl-title">${deco("⏳")} Dòng thời gian lịch sử · <b>${EVENTS.length}</b> mốc</div>
+      <button type="button" class="mode-btn" data-mode="season" title="Quay lại chọn theo tháng">${deco("🗓️")} Theo mùa</button></div>
     <div class="tl-card" aria-live="polite">
       <div class="tl-year"></div>
       <div class="tl-body"><b class="tl-head"></b>
@@ -32,7 +32,7 @@ timelineBar.onAdd = () => {
       <button type="button" class="tl-btn tl-play" aria-label="Tự chạy" title="Tự chạy qua các mốc">${TL_ICON.play}</button>
       <div class="tl-track">
         <input type="range" class="tl-range" min="0" max="${EVENTS.length - 1}" step="1" value="0" aria-label="Chọn mốc lịch sử">
-        <div class="tl-ends"><span>${EVENTS[0].when}</span><span>${EVENTS[EVENTS.length - 1].when}</span></div>
+        <div class="tl-ends" aria-hidden="true"><span>${EVENTS[0].when}</span><span>${EVENTS[EVENTS.length - 1].when}</span></div>
       </div>
       <button type="button" class="tl-btn tl-next" aria-label="Mốc sau" title="Mốc sau">${TL_ICON.next}</button>
     </div>`;
@@ -50,9 +50,11 @@ function showEvent(i, fly = true) {
   const ev = EVENTS[historyIdx], bar = document.querySelector(".timeline-bar");
   bar.querySelector(".tl-year").textContent = ev.when;
   bar.querySelector(".tl-head").textContent = ev.title;
-  bar.querySelector(".tl-place").textContent = `📍 ${ev.p.name}`;
+  bar.querySelector(".tl-place").innerHTML = `${deco("📍")} ${ev.p.name}`;
   bar.querySelector(".tl-text").textContent = ev.text;
   bar.querySelector(".tl-range").value = historyIdx;
+  // Thanh kéo: đọc "TK IV: Chăm Pa dựng thánh địa (mốc 1 trên 26)" thay vì con số "0"
+  bar.querySelector(".tl-range").setAttribute("aria-valuetext", `${ev.when}: ${ev.title} (mốc ${historyIdx + 1} trên ${EVENTS.length})`);
   bar.querySelector(".tl-prev").disabled = historyIdx === 0;
   bar.querySelector(".tl-next").disabled = historyIdx === EVENTS.length - 1;
   // Làm nổi bật marker của địa danh, các marker khác mờ đi

@@ -19,11 +19,22 @@ body { display:flex; height:100vh; font-family:var(--serif); font-size:16px; col
 :root { --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .32 0 0 0 0 .15 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"); }
 #sidebar, #map { background-image:var(--grain); }
 
+/* Chữ chỉ dành cho trình đọc màn hình */
+.sr-only { position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0);
+           white-space:nowrap; border:0; }
+/* Lối tắt bàn phím: ẩn cho tới khi được focus (Tab đầu tiên trên trang) */
+.skip-links a { position:fixed; left:12px; top:-60px; z-index:5000; padding:8px 14px; border-radius:4px; font-size:15px;
+                background:var(--ink); color:var(--paper); text-decoration:none; box-shadow:0 3px 10px rgba(0,0,0,.35); }
+.skip-links a:focus { top:12px; outline:2px solid var(--accent); outline-offset:2px; }
+
 /* ===== Thanh bên ===== */
 #sidebar { width:350px; display:flex; flex-direction:column; background-color:var(--paper); border-right:3px double var(--sepia); z-index:1000; }
 #sidebar header { padding:16px 16px 12px; border-bottom:1px solid var(--line); }
-h1 { font-family:var(--display); font-weight:800; font-size:24px; color:var(--ink); margin-bottom:10px; letter-spacing:.3px; }
-#search { width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:4px; font:inherit; font-size:15px;
+h1 { font-family:var(--display); font-weight:800; font-size:24px; color:var(--ink); margin-bottom:8px; letter-spacing:.3px; }
+/* Nhãn nhìn thấy được của ô tìm kiếm (placeholder chỉ còn là ví dụ) */
+.search-label { display:block; margin-bottom:3px; font-size:14px; font-style:italic; color:var(--muted); }
+/* Viền ô nhập đủ đậm để nhận ra (≥ 3:1 so với giấy) */
+#search { width:100%; padding:8px 12px; border:1px solid var(--sepia); border-radius:4px; font:inherit; font-size:15px;
           background:#fffaf0; color:var(--ink); }
 #search::placeholder { color:var(--muted); opacity:1; }
 #search:focus { outline:2px solid var(--sepia); outline-offset:0; }
@@ -38,7 +49,8 @@ h1 { font-family:var(--display); font-weight:800; font-size:24px; color:var(--in
 #filters { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
 .chip { border:1px solid var(--line); background:#fffaf0; border-radius:999px; padding:2px 11px; font:inherit; font-size:14px;
         color:var(--ink); cursor:pointer; }
-.chip[style] { border-color:color-mix(in srgb, var(--c) 45%, var(--paper)); }
+.chip { border-color:color-mix(in srgb, var(--sepia) 80%, var(--paper)); }
+.chip[style] { border-color:color-mix(in srgb, var(--c) 80%, var(--paper)); }   /* viền ≥ 3:1 so với giấy */
 .chip[style]:not(.active):hover { background:var(--bg); }   /* chip đang chọn giữ nền đậm, không thì chữ trắng trên nền nhạt */
 .chip:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
 .chip.active { background:var(--c, var(--ink)); border-color:var(--c, var(--ink)); color:#fff; }

@@ -101,6 +101,19 @@ Thêm vào `HISTORY` cuối `data/data.js` (giữ thứ tự tăng dần theo `y
 | Màu ban ngày / ban đêm | biến CSS trong `css/base.css`, `css/theme.css` · `css/night.css` |
 | Màu từng loại địa danh | `CATEGORIES` trong `data/data.js` |
 
+## Trợ năng (accessibility)
+
+Trang nhắm chuẩn WCAG 2.1 AA. Khi sửa giao diện, giữ các quy ước sau:
+
+- **Emoji trang trí** bọc bằng `deco("🌸")` (trình đọc màn hình bỏ qua). Emoji **có nghĩa** (thời tiết, 💧 khả năng mưa)
+  thì kèm chữ ẩn `srOnly("ít mây")` hoặc `role="img" aria-label="…"`. Cả hai hàm ở `js/places.js`.
+- **Thông báo thay đổi** (số kết quả, tháng đang chọn, thời tiết) gọi `announce("…")` — đọc qua vùng `#sr-status`.
+- **Mở thông tin địa danh** luôn qua `openPlace()` / `closePlace()` (`js/popup.js`): tự đưa focus vào tiêu đề và trả focus
+  về nút đã bấm khi đóng.
+- **Màu chữ** ≥ 4.5:1 so với nền (chữ to ≥ 3:1), viền ô nhập / nút ≥ 3:1 — cả ban ngày lẫn ban đêm (`css/night.css`).
+- **Hiệu ứng tự chạy** phải dừng trong 5 giây (vòng sáng chỉ chạy 2 lượt) và tắt hẳn khi máy bật "giảm chuyển động".
+- **Vùng chạm** trên màn hình cảm ứng ≥ 40px (`@media (pointer:coarse)` trong `css/responsive.css`).
+
 ## Nguồn dữ liệu & giấy phép
 
 - Bản đồ nền khi phóng to: © OpenStreetMap contributors (ODbL).

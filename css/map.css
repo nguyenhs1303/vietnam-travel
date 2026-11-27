@@ -29,7 +29,7 @@
 .cartouche { margin:14px 14px 0 0 !important; background:var(--paper); border:1px solid var(--ink); outline:3px double var(--sepia);
              outline-offset:3px; padding:8px 18px 6px; text-align:center; box-shadow:0 4px 12px rgba(60,35,10,.3); }
 .cartouche small { display:block; font-variant:small-caps; letter-spacing:3px; font-size:13px; color:var(--sepia); }
-.cartouche h2 { font-family:var(--display); font-weight:800; font-size:22px; line-height:1.05; margin:2px 0; color:var(--ink); }
+.cartouche .cart-title { font-family:var(--display); font-weight:800; font-size:22px; line-height:1.05; margin:2px 0; color:var(--ink); }
 .cartouche .orn { font-size:16px; color:var(--sepia); line-height:1; }
 .compass { margin:0 14px 24px 0 !important; opacity:.9; pointer-events:none; }
 .compass .cmp { font-family:var(--display); font-size:11px; font-weight:600; fill:var(--ink); }
@@ -88,9 +88,11 @@
    (trước đây đổi box-shadow liên tục làm trình duyệt vẽ lại mỗi khung, tốn pin khi đứng yên) */
 .pin::before { content:""; position:absolute; inset:-6px; border-radius:50%; border:2px solid transparent;
                pointer-events:none; opacity:0; }
-.in-season .pin::before { border-color:rgba(214,140,0,.85); animation:ring-out 1.8s ease-out infinite; }
+/* Vòng sáng lan ra 2 lượt (~3,6 giây) rồi đứng yên thành vòng tĩnh — chuyển động tự chạy phải dừng trong 5 giây (WCAG 2.2.2) */
+.in-season .pin::before { border-color:rgba(214,140,0,.85); opacity:1; animation:ring-out 1.8s ease-out 2; }
 /* Ngoài mùa: nhạt bớt nhưng vẫn rõ là bấm được (trước đây mờ 40% + xám hẳn trông như bị vô hiệu hoá) */
 .off-season .pin { opacity:.8; filter:grayscale(.7); }
 .off-season .place-name { opacity:.8; }
-@keyframes ring-out { 0% { transform:scale(1); opacity:.9; } 70%, 100% { transform:scale(1.75); opacity:0; } }
+@keyframes ring-out { 0% { transform:scale(1); opacity:.9; } 70% { transform:scale(1.75); opacity:0; } 71% { transform:scale(1); opacity:0; } 100% { transform:scale(1); opacity:1; } }
 @media (prefers-reduced-motion:reduce) { .in-season .pin::before { animation:none; opacity:1; } }
+.cartouche:focus-visible { outline:2px solid var(--accent); outline-offset:6px; }

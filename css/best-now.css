@@ -1,9 +1,9 @@
 /* ===== "Đẹp nhất lúc này" ===== */
 #best-now { margin-top:12px; border:1px solid var(--line); border-radius:4px; background:color-mix(in srgb, var(--season) 6%, transparent); }
 #best-now summary { cursor:pointer; padding:5px 10px; font-family:var(--display); font-weight:600; font-size:15px; color:var(--ink);
-                    list-style:none; display:flex; align-items:center; justify-content:space-between; }
+                    list-style:none; display:flex; align-items:center; gap:6px; }
 #best-now summary::-webkit-details-marker { display:none; }
-#best-now summary::after { content:"▾"; font-size:13px; color:var(--muted); transition:transform .2s; }
+#best-now summary::after { content:"▾"; margin-left:auto; font-size:13px; color:var(--muted); transition:transform .2s; }
 #best-now:not([open]) summary::after { transform:rotate(-90deg); }
 .best-body { padding:0 8px 6px; }
 .best-wait { font-size:13px; font-style:italic; color:var(--muted); padding:2px 2px 4px; }

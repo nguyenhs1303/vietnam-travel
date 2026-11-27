@@ -4,11 +4,11 @@
 // Khung tiêu đề (cartouche), la bàn, thước tỷ lệ
 const cartouche = L.control({ position: "topright" });
 cartouche.onAdd = () => Object.assign(L.DomUtil.create("div", "cartouche"), {
-  innerHTML: `<small>Bản đồ</small><h2>Danh thắng<br>Việt Nam</h2><div class="orn">❦</div><small>Atlas du lịch · MMXXVI</small>` });
+  innerHTML: `<small>Bản đồ</small><div class="cart-title">Danh thắng<br>Việt Nam</div><div class="orn" aria-hidden="true">❦</div><small>Atlas du lịch · MMXXVI</small>` });
 cartouche.addTo(map);
 const compass = L.control({ position: "bottomright" });
 compass.onAdd = () => Object.assign(L.DomUtil.create("div", "compass"), { innerHTML: `
-  <svg viewBox="-50 -50 100 100" width="88" height="88" aria-label="La bàn">
+  <svg viewBox="-50 -50 100 100" width="88" height="88" aria-hidden="true">
     <circle r="40" fill="none" stroke="currentColor" stroke-width=".8"/><circle r="36" fill="none" stroke="currentColor" stroke-width=".4"/>
     <g fill="currentColor" opacity=".35"><path d="M0 -30 L5 0 L0 30 L-5 0Z" transform="rotate(45)"/><path d="M0 -30 L5 0 L0 30 L-5 0Z" transform="rotate(-45)"/></g>
     <path d="M0 -38 L7 0 L0 0Z" fill="currentColor"/><path d="M0 -38 L-7 0 L0 0Z" class="cf" stroke="currentColor" stroke-width=".6"/>

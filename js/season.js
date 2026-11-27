@@ -7,7 +7,7 @@ seasonBar.onAdd = () => {
   const el = L.DomUtil.create("div", "season-bar");
   L.DomEvent.disableClickPropagation(el);
   L.DomEvent.disableScrollPropagation(el);
-  el.innerHTML = `<div class="bar-head"><div class="season-title"></div><button type="button" class="mode-btn" data-mode="history" title="Xem các mốc lịch sử trên bản đồ">⏳ Lịch sử</button></div><div class="season-months" role="group" aria-label="Chọn tháng"></div>`;
+  el.innerHTML = `<div class="bar-head"><div class="season-title"></div><button type="button" class="mode-btn" data-mode="history" title="Xem các mốc lịch sử trên bản đồ">${deco("⏳")} Lịch sử</button></div><div class="season-months" role="group" aria-label="Chọn tháng"></div>`;
   const row = el.querySelector(".season-months");
 
   const counts = Array.from({ length: 13 }, (_, m) => PLACES.filter(p => m === 0 || p.months.has(m)).length);
@@ -17,9 +17,12 @@ seasonBar.onAdd = () => {
     b.className = "month" + (m === 0 ? " all" : "") + (m === CURRENT_MONTH ? " now" : "");
     b.dataset.m = m;
     b.title = m === 0 ? "Hiện tất cả, không lọc theo mùa" : `Tháng ${m}: ${counts[m]} nơi đang mùa đẹp`;
+    // Nhãn đọc to: "T11" sẽ bị đọc thành "tê mười một" → đọc đủ "Tháng 11 (tháng này), 6 nơi đang mùa đẹp"
+    b.setAttribute("aria-label", m === 0 ? "Cả năm, không lọc theo mùa"
+      : `Tháng ${m}${m === CURRENT_MONTH ? " (tháng này)" : ""}, ${counts[m]} nơi đang mùa đẹp`);
     b.innerHTML = m === 0
       ? "Cả năm"
-      : `<span class="bar" style="--h:${counts[m] / max}"></span><span>T${m}</span>`;
+      : `<span class="bar" style="--h:${counts[m] / max}" aria-hidden="true"></span><span>T${m}</span>`;
     b.onclick = () => setMonth(m);
     row.appendChild(b);
   });
@@ -50,8 +53,8 @@ function updateSeasonBar() {
   });
   const n = PLACES.filter(p => activeMonth && p.months.has(activeMonth)).length;
   document.querySelector(".season-title").innerHTML = activeMonth === 0
-    ? "🗓️ Cả năm · chọn một tháng để xem nên đi đâu"
-    : `🗓️ Tháng ${activeMonth}${activeMonth === CURRENT_MONTH ? `<span class="hide-sm"> (tháng này)</span>` : ""} đi đâu? · ` +
+    ? `${deco("🗓️")} Cả năm · chọn một tháng để xem nên đi đâu`
+    : `${deco("🗓️")} Tháng ${activeMonth}${activeMonth === CURRENT_MONTH ? `<span class="hide-sm"> (tháng này)</span>` : ""} đi đâu? · ` +
       `<b>${n} nơi</b><span class="hide-sm"> đang vào mùa đẹp</span><span class="show-sm"> đang đẹp</span>`;
 }
 
@@ -59,4 +62,6 @@ function setMonth(m) {
   activeMonth = m;
   updateSeasonBar();
   render({ refit: false });
+  const n = PLACES.filter(p => m && p.months.has(m)).length;
+  announce(m === 0 ? "Cả năm: hiện tất cả địa danh, không lọc theo mùa." : `Tháng ${m}: ${n} nơi đang vào mùa đẹp, đã đưa lên đầu danh sách.`);
 }

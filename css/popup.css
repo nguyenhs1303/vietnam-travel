@@ -7,12 +7,15 @@
 .popup .hero img { display:block; width:100%; height:150px; object-fit:cover; filter:sepia(.35) saturate(.9);
                    border-bottom:1px solid var(--sepia); }
 .popup .credit { position:absolute; right:6px; bottom:6px; max-width:calc(100% - 12px); font-size:11px; color:#fff;
-                 background:rgba(40,25,10,.55); padding:0 6px; border-radius:3px; text-decoration:none;
+                 background:rgba(40,25,10,.72); padding:0 6px; border-radius:3px; text-decoration:none;
                  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .popup .credit:hover { text-decoration:underline; }
 .leaflet-container a.leaflet-popup-close-button { background:rgba(246,236,212,.92); color:var(--ink); border-radius:50%;
-  top:6px; right:6px; width:24px; height:24px; line-height:22px; z-index:1; }
-.popup h3 { font-family:var(--display); font-size:19px; color:var(--ink); margin-bottom:2px; }
+  top:6px; right:6px; width:32px; height:32px; line-height:30px; font-size:20px; z-index:1; }
+.leaflet-container a.leaflet-popup-close-button:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+.popup .place-title { font-family:var(--display); font-size:19px; font-weight:700; line-height:1.2; color:var(--ink); margin-bottom:2px; }
+.place-title:focus { outline:none; }
+.place-title:focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-radius:2px; }
 .popup .region { color:var(--muted); font-size:14px; font-style:italic; margin-bottom:6px; }
 .popup p { font-size:15px; line-height:1.4; margin:6px 0 !important; }
 .popup .best { margin-top:6px; font-size:14px; font-style:italic; color:#5b6b44; border-top:1px dashed var(--line); padding-top:5px; }
@@ -31,6 +34,7 @@
                               border-bottom:1px solid var(--paper); }
 .ptab:focus-visible { outline:2px solid var(--season); outline-offset:-2px; }
 .ppanel { padding-top:8px; height:200px; overflow-y:auto; margin-right:-12px; padding-right:12px; }
+.ppanel:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; border-radius:3px; }   /* focus được để cuộn bằng phím */
 .ppanel .wx { margin-top:0; }
 .ppanel .desc { margin-top:0 !important; }
 .story p { font-style:italic; }
