@@ -14,7 +14,7 @@ PLACES.forEach((p, idx) => {
   // Nội dung popup là hàm → dựng lại mỗi lần mở (và khi thời tiết vừa tải xong)
   p.popup = L.popup({
       maxWidth: 280,
-      // chừa chỗ cho thanh chọn tháng ở đáy bản đồ để popup không bị che
+      // lề để tránh các khung trên bản đồ: tính lại mỗi lần mở (popupPadding() trong popup.js)
       autoPanPaddingTopLeft: [10, 10],
       autoPanPaddingBottomRight: [10, 140],
     }, p.marker).setContent(() => popupHtml(p, idx));

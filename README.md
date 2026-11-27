@@ -95,6 +95,7 @@ Thêm vào `HISTORY` cuối `data/data.js` (giữ thứ tự tăng dần theo `y
 | Cách chấm điểm "Đẹp nhất lúc này" | `scorePlace()` trong `js/best-now.js` |
 | Lời khuyên theo thời tiết | `weatherTips()` trong `js/weather.js` |
 | Mức zoom chuyển sang nền OSM | `updatePaperDetail()` trong `js/map.js` |
+| Mức zoom khi bấm một địa danh (mặc định 7, vẫn là bản đồ giấy) | `focusPlace()` trong `js/list.js` |
 | Thời lượng hiệu ứng mở đầu | `playIntro()` trong `js/intro.js` |
 | Tốc độ tự chạy dòng thời gian | `startHistoryPlay()` trong `js/timeline.js` (4500 ms) |
 | Màu ban ngày / ban đêm | biến CSS trong `css/base.css`, `css/theme.css` · `css/night.css` |

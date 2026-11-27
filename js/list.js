@@ -112,10 +112,11 @@ function focusPlace(p, li, fly = true) {
   li?.classList.add("active");
   li?.scrollIntoView({ block:"nearest" });
   if (!fly) return openPlace(p);
-  // Giữ mức zoom đang xem: chỉ phóng to (tối thiểu 11), không bao giờ thu nhỏ ra
-  const ll = L.latLng(p.lat, p.lng), zoom = Math.max(map.getZoom(), 11);
+  // Giữ mức zoom đang xem, chỉ phóng tới tối thiểu 7: vẫn là bản đồ giấy (≥ 9 mới chuyển sang nền OSM), vẫn thấy cả vùng
+  // xung quanh. Ai muốn xem đường phố thì tự phóng to tiếp.
+  const ll = L.latLng(p.lat, p.lng), zoom = Math.max(map.getZoom(), 7);
   // Đang thấy rõ điểm đó rồi thì mở popup ngay, không bay
-  if (map.getZoom() >= 11 && map.getBounds().pad(-0.15).contains(ll)) return openPlace(p);
+  if (map.getZoom() >= 7 && map.getBounds().pad(-0.15).contains(ll)) return openPlace(p);
   // Mở popup sau khi bay xong, để bản đồ tự dịch cho popup nằm gọn trong khung
   closePlace();
   map.once("moveend", () => openPlace(p));

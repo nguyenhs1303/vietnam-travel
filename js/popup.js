@@ -14,13 +14,29 @@ const POPUP_TABS = [
   { id: "story", icon: "📜", label: "Chuyện kể",  html: p => storyHtml(p), when: p => p.story },
   { id: "food",  icon: "🍜", label: "Món ăn",     html: p => foodsHtml(p), when: p => p.foods?.length },
 ];
-// Chiều cao phần nội dung tab: vừa khung bản đồ hiện tại (màn hình thấp thì thấp lại, tối đa 200px)
-function panelHeight() {
+// Popup không được nằm dưới các khung trên bản đồ (khung tiêu đề, công tắc ngày/đêm, thanh tháng / dòng thời gian…):
+// tính lề trên / dưới cho Leaflet tự dịch bản đồ (autoPan), chỉ tính những khung nằm cùng cột với popup.
+const POPUP_HALF_W = 175;                         // nửa bề ngang popup (maxWidth 280 + lề) + chút dư
+function popupPadding(p) {
+  const box = map.getContainer().getBoundingClientRect();
+  const x = map.latLngToContainerPoint([p.lat, p.lng]).x + (p.popup.options.offset?.[0] || 0);
+  const pad = { top: 10, bottom: 10 };
+  map.getContainer().querySelectorAll(".leaflet-control").forEach(c => {
+    const r = c.getBoundingClientRect();
+    if (!r.height || r.right - box.left < x - POPUP_HALF_W || r.left - box.left > x + POPUP_HALF_W) return;
+    if (c.closest(".leaflet-top")) pad.top = Math.max(pad.top, r.bottom - box.top + 10);
+    else pad.bottom = Math.max(pad.bottom, box.bottom - r.top + 10);
+  });
+  return pad;
+}
+// Chiều cao phần nội dung tab: vừa phần bản đồ còn trống giữa các khung (màn hình thấp thì thấp lại, 110–200px)
+function panelHeight(p) {
   const mapH = map.getContainer().clientHeight;
   const hero = matchMedia("(max-width:760px)").matches ? 110 : 150;
-  return Math.max(110, Math.min(200, mapH - hero - 185));   // 185 ≈ tiêu đề + hàng tab + lề + mũi nhọn popup
+  const pad = p?.pad || { top: 10, bottom: 140 };
+  return Math.max(110, Math.min(200, mapH - pad.top - pad.bottom - hero - 135));   // 135 ≈ tiêu đề + hàng tab + lề + mũi nhọn
 }
-function popupHtml(p, idx, h = panelHeight()) {
+function popupHtml(p, idx, h = panelHeight(p)) {
   const tabs = POPUP_TABS.filter(t => !t.when || t.when(p));
   // Tab mặc định: Thời tiết; tải thời tiết bị lỗi (không có số liệu) thì mở Giới thiệu, tránh một ô gần như trống
   const wxOk = p.weather || weatherState === "loading";
@@ -117,7 +133,13 @@ function closeSheet() {
 }
 function openPlace(p) {
   if (isSmallScreen()) { map.closePopup(); openSheet(p); }
-  else { closeSheet(); p.popup.setLatLng([p.lat, p.lng]).openOn(map); }
+  else {
+    closeSheet();
+    p.pad = popupPadding(p);
+    p.popup.options.autoPanPaddingTopLeft = [10, p.pad.top];
+    p.popup.options.autoPanPaddingBottomRight = [10, p.pad.bottom];
+    p.popup.setLatLng([p.lat, p.lng]).openOn(map);
+  }
 }
 function closePlace() { map.closePopup(); closeSheet(); }
 const isPlaceOpen = p => sheetPlace === p || p.popup.isOpen();

@@ -20,6 +20,8 @@ body.night {
 .night .range { color:#d9b66e; }
 .night #search, .night .chip, .night .month { background:#22385a; color:var(--ink); }
 .night .chip.active { background:var(--c, var(--ink)); color:#fff; }
+/* Nhãn loại: nền pastel sáng của ban ngày chói trên nền đêm → nền pha màu loại với giấy đêm, chữ sáng (≥ 5:1) */
+.night .cat { background:color-mix(in srgb, var(--c) 35%, var(--paper)); color:color-mix(in srgb, var(--c) 35%, #fff); }
 .night .chip.active:not([style]) { color:#1b1200; }
 .night #list li:hover, .night #list li.active, .night .leaflet-bar a:hover { background:#243c60; }
 .night #list .tag { color:#2a1a00; background:#e3a43c; }
